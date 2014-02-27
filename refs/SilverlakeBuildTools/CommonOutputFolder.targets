@@ -1,0 +1,30 @@
+﻿<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003"
+         InitialTargets="_CommonOutputFolderValidate">
+
+    <Target Name="_CommonOutputFolderValidate">
+        <Error Condition="$(SbtProjectFolder)=='' OR !Exists('$(SbtProjectFolder)')"
+               Text="SbtProjectFolder must be defined."/>
+    </Target>
+    
+    <!-- Setup a common output folder for all projects -->
+    <PropertyGroup>
+        <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+        <OutputPath>$(SbtProjectFolder)output\$(SbtSubProjectFolder)$(Configuration)\</OutputPath>
+        <BaseIntermediateOutputPath>$(SbtProjectFolder)temp\$(SbtSubProjectFolder)</BaseIntermediateOutputPath>
+    </PropertyGroup>
+    <PropertyGroup Condition="$(MSBuildProjectExtension)=='.wixproj'">
+        <IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\</IntermediateOutputPath>
+    </PropertyGroup>
+    <PropertyGroup Condition="$(MSBuildProjectExtension)=='.vcxproj'">
+        <IntDir>$(SbtProjectFolder)temp\$(SbtSubProjectFolder)$(Configuration)\</IntDir>
+        <OutDir>$(SbtProjectFolder)output\$(SbtSubProjectFolder)$(Configuration)\</OutDir>
+    </PropertyGroup>
+
+    <!-- Default project references to NOT use copy local -->
+    <ItemDefinitionGroup>
+        <ProjectReference>
+            <Private>False</Private>
+        </ProjectReference>
+    </ItemDefinitionGroup>
+
+</Project>

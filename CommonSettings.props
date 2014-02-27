@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+    <!-- Shared Assembly Info Properties -->
+    <PropertyGroup>
+        <SbtCompanyName>Silverlake Software LLC</SbtCompanyName>
+        <SbtProductName>ProxyFoo</SbtProductName>
+        <SbtMajorVersion>0</SbtMajorVersion>
+        <SbtMinorVersion>1</SbtMinorVersion>
+        <SbtCopyrightNotice>Copyright © $(SbtCurrentYear) Silverlake Software LLC. Licensed under the Apache License, Version 2.0.</SbtCopyrightNotice>
+    </PropertyGroup>
+
+    <!-- Use SolutionName to override common settings for a project with multiple solution files. -->
+
+    <!-- Satisfy MSBuild and SBT conventions -->
+    <PropertyGroup>
+        <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+        <SbtImportFolder>$(SbtProjectFolder)refs\SilverlakeBuildTools\</SbtImportFolder>
+    </PropertyGroup>
+
+</Project>

@@ -1,0 +1,161 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003"
+         InitialTargets="_SharedAssemblyInfoValidate">
+
+    <!-- This target is designed to always create and use a .cs shared assembly file
+         as the "master" file.  To add another language: Add a conditinal compile item;
+         Add targets to _Check as needed for the project type; Modify the Generate
+         custom task to accept a language param; Add another generate task (conditional) to Finalize.
+
+         The following properties MUST be set before this file is imported:
+         SbtProjectFolder,
+         SbtCompanyName,
+         SbtProductName,
+         SbtMajorVersion,
+         SbtMinorVersion
+         
+         The following properties MAY be set before this file is imported to override defaults:
+         SbtCurrentYear
+         SbtCopyrightNotice
+         SbtBuildNumber
+         SbtRevisionNumber
+
+         To override the version number generation create a new target that sets the BeforeTarget
+         to GetNewVersionNumbers and set SbtBuildNumber and SbtRevisionNumber.  You can also
+         override the GetNewVersionNumbers target after the import. -->
+
+    <!-- Validate Input -->
+    <Target Name="_SharedAssemblyInfoValidate">
+        <Error Condition="$(SbtProjectFolder)=='' OR !Exists('$(SbtProjectFolder)')"
+           Text="SbtProjectFolder must be defined."/>
+        <Error Condition="$(SbtCompanyName)==''"
+           Text="SbtCompanyName must be defined."/>
+        <Error Condition="$(SbtProductName)==''"
+           Text="SbtProductName must be defined."/>
+        <Error Condition="$(SbtMajorVersion)==''"
+           Text="SbtMajorVersion must be defined."/>
+        <Error Condition="$(SbtMinorVersion)==''"
+           Text="SbtMinorVersion must be defined."/>
+    </Target>
+    
+    <!-- Dependencies -->
+    <Import Project="Silverlake.Build.Tasks"/>
+
+    <PropertyGroup>
+        <SbtCurrentYear Condition="'$(SbtCurrentYear)'==''">$([System.DateTime]::Now.Year)</SbtCurrentYear>
+        <SbtCopyrightNotice Condition="'$(SbtCopyrightNotice)'==''">Copyright © $(SbtCurrentYear) $(SbtCompanyName). All Rights Reserved.</SbtCopyrightNotice>
+        <SbtAssemblyFolder Condition="$(SbtAssemblyFolder)==''">$(SbtProjectFolder)temp\$(SbtSubProjectFolder)$(Configuration)\</SbtAssemblyFolder>
+        <_SbtNewVersionCheck>True</_SbtNewVersionCheck>
+        <_SbtNewVersionCheck Condition="$(SbtBuildNumber)!='' AND $(SbtRevisionNumber)!=''">False</_SbtNewVersionCheck>
+        <_SbtNewVersionNeeded>False</_SbtNewVersionNeeded>
+        <_SbtAssemblyPath>$(SbtAssemblyFolder)SharedAssemblyInfo.g.cs</_SbtAssemblyPath>
+        <BuildingInsideVisualStudio Condition="$(BuildingInsideVisualStudio)==''">False</BuildingInsideVisualStudio>
+    </PropertyGroup>
+    
+    <!-- Visual Studio appears to resolve items statically and CreateItem seemed to cause it
+         to completely ignore the file.  With static resolution it would always build twice.
+         This should prevent that, but we give up common version numbers on big builds.-->
+    <PropertyGroup Condition="$(BuildingInsideVisualStudio)">
+        <_SbtAssemblyPath>$(SbtAssemblyFolder)$(MSBuildProjectName)AssemblyInfo.g.cs</_SbtAssemblyPath>
+    </PropertyGroup>
+
+    <!-- Define the items used for shared assembly info -->
+    <ItemGroup>
+        <SbtAssemblyInfo Include="$(_SbtAssemblyPath)">
+            <AssemblyConfiguration>$(Configuration)</AssemblyConfiguration>
+            <AssemblyCompany>$(SbtCompanyName)</AssemblyCompany>
+            <AssemblyCopyright>$(SbtCopyrightNotice)</AssemblyCopyright>
+            <AssemblyProduct>$(SbtProductName)</AssemblyProduct>
+        </SbtAssemblyInfo>
+    </ItemGroup>
+    <ItemGroup Condition="$(MSBuildProjectExtension)=='.csproj'">
+        <Compile Include="@(SbtAssemblyInfo)"/>
+    </ItemGroup>
+
+    <!-- Lookup the numbers from an existing shared file -->
+    <Target Name="ReadExistingVersionNumbers"
+            BeforeTargets="BeforeBuild">
+        <GetAssemblyVersion AssemblyPath="@(SbtAssemblyInfo)"  Condition="Exists('@(SbtAssemblyInfo)')">
+            <Output TaskParameter="BuildNumber" PropertyName="SbtBuildNumber"
+                    Condition="$(SbtBuildNumber)==''"/>
+            <Output TaskParameter="RevisionNumber" PropertyName="SbtRevisionNumber"
+                    Condition="$(SbtRevisionNumber)==''"/>
+        </GetAssemblyVersion>
+        <PropertyGroup Condition="!Exists('@(SbtAssemblyInfo)')">
+            <_SbtNewVersionNeeded>True</_SbtNewVersionNeeded>
+        </PropertyGroup>
+    </Target>
+
+    <!-- Setup multi-part composite version properties -->
+    <Target Name="CreateCompositeVersionProperties">
+        <PropertyGroup>
+            <SbtShortVersion>$(SbtMajorVersion).$(SbtMinorVersion).$(SbtBuildNumber)</SbtShortVersion>
+            <SbtFullVersion>$(SbtShortVersion).$(SbtRevisionNumber)</SbtFullVersion>
+        </PropertyGroup>
+        <ItemGroup>
+            <SbtAssemblyInfo>
+                <AssemblyVersion>$(SbtFullVersion)</AssemblyVersion>
+            </SbtAssemblyInfo>
+        </ItemGroup>
+        <Message Importance="normal" Text="Default Shared Version = $(SbtFullVersion)"/>
+    </Target>
+
+    <!-- Override this target to choose different build number generation -->
+    <Target Name="GetNewVersionNumbers">
+        <GetVersionNumber Condition="'$(SbtBuildNumber)'==''" Algorithm="SilvDate2">
+            <Output TaskParameter="Result" PropertyName="SbtBuildNumber"/>
+        </GetVersionNumber>
+        <GetVersionNumber Condition="'$(SbtRevisionNumber)'==''" Algorithm="SilvTime">
+            <Output TaskParameter="Result" PropertyName="SbtRevisionNumber"/>
+        </GetVersionNumber>
+    </Target>
+
+    <!-- NOTE: Inputs and outputs are copied from CSharp.targets CoreCompile target.
+         This represents the concept that a new version number should only be created if a compile
+         is needed anyway (don't let this update trigger the build).
+         Last three are from wix.
+         Visual Studio didn't like this being before CoreCompile.  I think that might be because of
+         when the timestamp is generated. -->
+    <Target Name="_CheckNewVersionNeeded"
+            BeforeTargets="BeforeBuild"
+            Condition="$(_SbtNewVersionCheck)"
+            Inputs="$(MSBuildAllProjects);
+                    @(Compile);
+                    @(Page);
+                    @(_CoreCompileResourceInputs);
+                    $(ApplicationIcon);
+                    $(AssemblyOriginatorKeyFile);
+                    @(ReferencePath);
+                    @(CompiledLicenseFile);
+                    @(EmbeddedDocumentation); 
+                    $(Win32Resource);
+                    $(Win32Manifest);
+                    @(CustomAdditionalCompileInputs);
+                    @(Content);
+                    @(_ResolvedWixExtensionPaths);
+                    @(_ResolvedProjectReferencePaths);"
+            Outputs="@(SbtAssemblyInfo)">
+        <CreateProperty Value="True">
+            <Output TaskParameter="ValueSetByTask" PropertyName="_SbtNewVersionNeeded"/>
+        </CreateProperty>
+    </Target>
+
+    <Target Name="_GetNewVersionNumbersIfNeeded" Condition="$(_SbtNewVersionNeeded)">
+        <CallTarget Targets="GetNewVersionNumbers"/>
+    </Target>
+
+    <Target Name="_FinalizeSharedAssemblyInfo"
+            DependsOnTargets="_GetNewVersionNumbersIfNeeded;CreateCompositeVersionProperties"
+            BeforeTargets="BeforeBuild">
+        <MakeDir Directories="$(SbtAssemblyFolder)"/>
+        <GenerateAssemblyInfo AssemblyInfo="@(SbtAssemblyInfo)"/>
+    </Target>
+
+    <!-- Clean target was removed intentionally since solution files call clean 
+         separately as part of each rebuild. -->
+    <Target Name="CleanInVisualStudio" Condition="$(BuildingInsideVisualStudio)"
+            AfterTargets="AfterClean">
+        <Delete Files="@(SbtAssemblyInfo)"/>
+    </Target>
+
+</Project>

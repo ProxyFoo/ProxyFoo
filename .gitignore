@@ -1,0 +1,11 @@
+*.user
+*.suo
+*.fb7lck
+*.fbl7
+*.fbpInf
+*.t4properties
+*.force
+*.ide
+output/
+temp/
+TempPE/
