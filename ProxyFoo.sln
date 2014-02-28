@@ -6,6 +6,7 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Project Items", "Project Items", "{3AC8E9D1-B9BB-4BEE-B7D8-3E09B3AF7517}"
 	ProjectSection(SolutionItems) = preProject
 		CommonSettings.props = CommonSettings.props
+		build\ProxyFoo.nuspec = build\ProxyFoo.nuspec
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProxyFoo", "source\ProxyFoo\ProxyFoo.csproj", "{44C179B9-8E5F-4B07-9A8C-D8918F49B61E}"

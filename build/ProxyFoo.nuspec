@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+
+<package>
+    <metadata>
+        <id>ProxyFoo</id>
+        <version>0.1.0</version>
+        <authors>Silverlake Software LLC</authors>
+        <owners>Jamie da Silva</owners>
+        <licenseUrl>https://github.com/ProxyFoo/ProxyFoo/blob/master/LICENSE</licenseUrl>
+        <projectUrl>https://github.com/ProxyFoo/ProxyFoo</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>ProxyFoo is a library for the .NET Framework to facilitate creating high-performance proxies for Duck casting, null safe wrappers, and other uses</description>
+        <releaseNotes>Initial Release</releaseNotes>
+        <copyright>Copyright 2014 Silverlake Software LLC.  Licensed under the Apache License, Version 2.0.</copyright>
+        <tags>ProxyFoo Duck DuckTyping dynamic</tags>
+    </metadata>
+    <files>
+        <file src="..\output\release\ProxyFoo.dll" target="lib\net40-client" />
+        <file src="..\output\release\ProxyFoo.xml" target="lib\net40-client" />
+        <file src="..\output\release\ProxyFoo.pdb" target="lib\net40-client" />
+        <file src="..\source\ProxyFoo\**\*.cs" target="src" />
+    </files>
+</package>
