@@ -29,7 +29,7 @@ namespace ProxyFoo.Core.Bindings
         readonly MethodInfo _adaptee;
         readonly MethodInfo _target;
         readonly DuckValueBindingOption _retValBinding;
-        readonly List<DuckValueBindingOption> _paramBindings;
+        readonly List<DuckParamBindingOption> _paramBindings;
         readonly int _score;
         //readonly Type[] _targetGenericArgBindings;
 
@@ -41,23 +41,23 @@ namespace ProxyFoo.Core.Bindings
             if (adapteeParams.Length!=candidateParams.Length)
                 return null;
 
-            var retValBinding = DuckValueBindingOption.GetForRetVal(adaptee.ReturnType, candidate.ReturnType);
+            var retValBinding = DuckValueBindingOption.Get(candidate.ReturnType, adaptee.ReturnType);
             if (!retValBinding.Bindable)
                 return null;
 
-            var valueBindingOptions = new List<DuckValueBindingOption>(adapteeParams.Length);
+            var paramBindings = new List<DuckParamBindingOption>(adapteeParams.Length);
             for (int i = 0; i < adapteeParams.Length; ++i)
             {
-                var paramBinding = DuckValueBindingOption.GetForParam(adapteeParams[i], candidateParams[i]);
+                var paramBinding = DuckParamBindingOption.Get(adapteeParams[i], candidateParams[i]);
                 if (!paramBinding.Bindable)
                     return null;
-                valueBindingOptions.Add(paramBinding);
+                paramBindings.Add(paramBinding);
             }
 
-            return new StandardMethodBinding(adaptee, candidate, retValBinding, valueBindingOptions);
+            return new StandardMethodBinding(adaptee, candidate, retValBinding, paramBindings);
         }
 
-        StandardMethodBinding(MethodInfo adaptee, MethodInfo target, DuckValueBindingOption retValBinding, List<DuckValueBindingOption> paramBindings)
+        StandardMethodBinding(MethodInfo adaptee, MethodInfo target, DuckValueBindingOption retValBinding, List<DuckParamBindingOption> paramBindings)
         {
             _adaptee = adaptee;
             _target = target;
@@ -80,12 +80,26 @@ namespace ProxyFoo.Core.Bindings
         public override void GenerateCall(ProxyModule proxyModule, ILGenerator gen)
         {
             var pars = _adaptee.GetParameters();
-            for (ushort i = 1; i <= pars.Length; ++i)
+            var targetPars = _target.GetParameters();
+
+            var tokens = new object[pars.Length];
+
+            // Generate in conversions
+            for (ushort i = 0; i < pars.Length; ++i)
             {
-                gen.EmitBestLdArg(i);
-                _paramBindings[i - 1].GenerateConversion(proxyModule, gen);
+                // ReSharper disable once AccessToModifiedClosure   
+                tokens[i] = _paramBindings[i].GenerateInConversion(() => gen.EmitBestLdArg((ushort)(i + 1)), proxyModule, gen);
             }
+
             gen.Emit(OpCodes.Callvirt, _target);
+
+            // Generate out conversions
+            for (ushort i = 0; i < pars.Length; ++i)
+            {
+                // ReSharper disable once AccessToModifiedClosure   
+                _paramBindings[i].GenerateOutConversion(tokens[i], () => gen.EmitBestLdArg((ushort)(i + 1)), proxyModule, gen);
+            }
+
             _retValBinding.GenerateConversion(proxyModule, gen);
         }
 

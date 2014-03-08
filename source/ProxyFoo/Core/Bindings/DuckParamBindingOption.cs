@@ -17,26 +17,24 @@
 #endregion
 
 using System;
+using System.Reflection;
 using System.Reflection.Emit;
 
 namespace ProxyFoo.Core.Bindings
 {
-    public abstract class DuckValueBindingOption
+    public abstract class DuckParamBindingOption
     {
         public abstract bool Bindable { get; }
         public abstract int Score { get; }
-        public abstract void GenerateConversion(ProxyModule proxyModule, ILGenerator gen);
+        public abstract object GenerateInConversion(Action load, ProxyModule proxyModule, ILGenerator gen);
+        public abstract void GenerateOutConversion(object token, Action load, ProxyModule proxyModule, ILGenerator gen);
 
-        internal static DuckValueBindingOption NotBindable = new NotBindableValueBinding();
+        internal static DuckParamBindingOption NotBindable = new NotBindableParamBinding();
 
-        public static DuckValueBindingOption Get(Type fromType, Type toType)
+        public static DuckParamBindingOption Get(ParameterInfo adaptee, ParameterInfo candidate)
         {
-            return IdentityValueBinding.TryBind(fromType, toType)
-                   ?? ImplicitNumericValueBinding.TryBind(fromType, toType)
-                   ?? ImplicitNullableValueBinding.TryBind(fromType, toType)
-                   ?? ImplicitReferenceValueBinding.TryBind(fromType, toType)
-                   ?? ImplicitUserConversionValueBinding.TryBind(fromType, toType)
-                   ?? DuckCastValueBinding.TryBind(fromType, toType)
+            return InParamBinding.TryBind(adaptee, candidate)
+                   ?? OutParamBinding.TryBind(adaptee, candidate)
                    ?? NotBindable;
         }
     }

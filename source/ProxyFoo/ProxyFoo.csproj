@@ -45,14 +45,18 @@
   <ItemGroup>
     <Compile Include="Attributes\DuckOptionalAttribute.cs" />
     <Compile Include="Core\Bindings\DuckCastValueBinding.cs" />
+    <Compile Include="Core\Bindings\DuckParamBindingOption.cs" />
     <Compile Include="Core\Bindings\DynamicDuckCastValueBinding.cs" />
     <Compile Include="Core\Bindings\IdentityValueBinding.cs" />
     <Compile Include="Core\Bindings\ImplicitNullableValueBinding.cs" />
     <Compile Include="Core\Bindings\ImplicitNumericValueBinding.cs" />
     <Compile Include="Core\Bindings\ImplicitReferenceValueBinding.cs" />
     <Compile Include="Core\Bindings\ImplicitUserConversionValueBinding.cs" />
+    <Compile Include="Core\Bindings\InParamBinding.cs" />
     <Compile Include="Core\Bindings\NotBindableMethodBinding.cs" />
+    <Compile Include="Core\Bindings\NotBindableParamBinding.cs" />
     <Compile Include="Core\Bindings\NotBindableValueBinding.cs" />
+    <Compile Include="Core\Bindings\OutParamBinding.cs" />
     <Compile Include="Core\Bindings\StandardMethodBinding.cs" />
     <Compile Include="Core\Bindings\StaticDuckCastValueBinding.cs" />
     <Compile Include="Core\Bindings\DuckMethodBindingOption.cs" />

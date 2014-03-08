@@ -182,5 +182,107 @@ namespace ProxyFoo.Tests.Functional
             Assert.That(duck, Is.Not.Null);
             Assert.That(duck.Append("A", 1), Is.EqualTo("A1"));
         }
+
+        public interface ISampleWithOut
+        {
+            void GetAnswer(out int value);
+        }
+
+        public class SampleWithOut
+        {
+            public void GetAnswer(out int value)
+            {
+                value = 42;
+            }
+        }
+
+        [Test]
+        public void DuckWithOutParamsSucceeds()
+        {
+            var o = new SampleWithOut();
+            var duck = Duck.Cast<ISampleWithOut>(o);
+            Assert.That(duck, Is.Not.Null);
+            int value;
+            duck.GetAnswer(out value);
+            Assert.That(value, Is.EqualTo(42));
+        }
+
+        public interface ISampleWithConvOut
+        {
+            void GetAnswer(out long value);
+        }
+
+        public class SampleWithConvOut
+        {
+            public void GetAnswer(out int value)
+            {
+                value = 42;
+            }
+        }
+
+        [Test]
+        public void DuckWithConvOutParamsSucceeds()
+        {
+            var o = new SampleWithOut();
+            var duck = Duck.Cast<ISampleWithConvOut>(o);
+            Assert.That(duck, Is.Not.Null);
+            long value;
+            duck.GetAnswer(out value);
+            Assert.That(value, Is.EqualTo(42));
+        }
+
+        public interface ISampleWithRef
+        {
+            void ChangeAnswer(ref int value);
+        }
+
+        public class SampleWithRef
+        {
+            public void ChangeAnswer(ref int value)
+            {
+                value = value + 1;
+            }
+        }
+
+        [Test]
+        public void DuckWithMatchingRefParamsSucceeds()
+        {
+            var o = new SampleWithRef();
+            var duck = Duck.Cast<ISampleWithRef>(o);
+            Assert.That(duck, Is.Not.Null);
+            int value = 41;
+            duck.ChangeAnswer(ref value);
+            Assert.That(value, Is.EqualTo(42));
+        }
+
+        public interface ISampleWithConvOutAndRetVal
+        {
+            long GetAnswer(out long value);
+        }
+
+        public class SampleWithConvOutAndRetVal
+        {
+            public int GetAnswer(out int value)
+            {
+                value = 42;
+                return 33;
+            }
+        }
+
+        /// <summary>
+        /// This test confirms that the stack order is correct in dealing with a conversion out and
+        /// conversion on the return value.
+        /// </summary>
+        [Test]
+        public void DuckWithConvOutParamsAndRetValSucceeds()
+        {
+            var o = new SampleWithConvOutAndRetVal();
+            var duck = Duck.Cast<ISampleWithConvOutAndRetVal>(o);
+            Assert.That(duck, Is.Not.Null);
+            long value;
+            long retVal = duck.GetAnswer(out value);
+            Assert.That(value, Is.EqualTo(42));
+            Assert.That(retVal, Is.EqualTo(33));
+        }
     }
 }

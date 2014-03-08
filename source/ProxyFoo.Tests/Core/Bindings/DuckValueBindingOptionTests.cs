@@ -99,22 +99,5 @@ namespace ProxyFoo.Tests.Core.Bindings
         {
             Assert.That(DuckValueBindingOption.Get(typeof(int), typeof(object)).Bindable, Is.Not.True);
         }
-
-        [Test]
-        public void CanGetRetValBinding()
-        {
-            Assert.That(DuckValueBindingOption.GetForRetVal(typeof(long), typeof(int)).Bindable);
-        }
-
-        public static void SampleMethodA(int a) {}
-        public static void SampleMethodB(long b) {}
-
-        [Test]
-        public void CanGetParamBinding()
-        {
-            var paramA = typeof(DuckValueBindingOptionTests).GetMethod("SampleMethodA").GetParameters()[0];
-            var paramB = typeof(DuckValueBindingOptionTests).GetMethod("SampleMethodB").GetParameters()[0];
-            Assert.That(DuckValueBindingOption.GetForParam(paramA, paramB).Bindable);
-        }
     }
 }

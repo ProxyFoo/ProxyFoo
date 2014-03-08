@@ -57,6 +57,55 @@ namespace ProxyFoo.Core
             gen.Emit(OpCodes.Call, type.GetMethod("op_Equality", new[] {type, type}));
         }
 
+        /// <summary>
+        /// s[0] = value
+        /// s[1] = reference to store value in
+        /// </summary>
+        /// <param name="gen">The code generator to use</param>
+        /// <param name="type">The Type of the value</param>
+        public static void EmitStoreToRef(this ILGenerator gen, Type type)
+        {
+            if (type.IsEnum)
+                type = type.GetEnumUnderlyingType();
+
+            if (type==typeof(byte) || type==typeof(sbyte))
+            {
+                gen.Emit(OpCodes.Stind_I1);
+            }
+            else if (type==typeof(short) || type==typeof(ushort))
+            {
+                gen.Emit(OpCodes.Stind_I2);
+            }
+            else if (type==typeof(int) || type==typeof(uint))
+            {
+                gen.Emit(OpCodes.Stind_I4);
+            }
+            else if (type==typeof(long) || type==typeof(ulong))
+            {
+                gen.Emit(OpCodes.Stind_I8);
+            }
+            else if (type==typeof(float))
+            {
+                gen.Emit(OpCodes.Stind_R4);
+            }
+            else if (type==typeof(double))
+            {
+                gen.Emit(OpCodes.Stind_R8);
+            }
+            else if (type.IsClass || type.IsInterface)
+            {
+                gen.Emit(OpCodes.Stind_Ref);
+            }
+            else if (type.IsValueType)
+            {
+                gen.Emit(OpCodes.Stobj, type);
+            }
+            else
+            {
+                throw new InvalidOperationException("Unable to handle type");
+            }
+        }
+
         public static void EmitLdDefaultValue(this ILGenerator gen, Type returnType)
         {
             if (returnType.IsEnum)

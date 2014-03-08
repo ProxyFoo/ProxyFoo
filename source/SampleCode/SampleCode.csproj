@@ -42,6 +42,7 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ByRefConversionSample.cs" />
     <Compile Include="CanDuckSampleProxy.cs" />
     <Compile Include="CanDuckStatic.cs" />
     <Compile Include="CheckForNullResult.cs" />
