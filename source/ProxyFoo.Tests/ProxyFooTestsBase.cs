@@ -37,13 +37,18 @@ namespace ProxyFoo.Tests
 
         static ProxyFooTestsBase()
         {
-            PeVerifyPath = ToolLocationHelper.GetPathToDotNetFrameworkSdkFile("peverify.exe", TargetDotNetFrameworkVersion.Version40);
+            // The +1 was necessary to work on a machine with only .NET 4.5.
+            PeVerifyPath = ToolLocationHelper.GetPathToDotNetFrameworkSdkFile("peverify.exe", TargetDotNetFrameworkVersion.Version40)
+                           ?? ToolLocationHelper.GetPathToDotNetFrameworkSdkFile("peverify.exe", TargetDotNetFrameworkVersion.Version40 + 1);
+            Assert.That(File.Exists(PeVerifyPath));
         }
 
         [SetUp]
         public virtual void SetUp()
         {
             string assemblyName = "ZPFD." + TestContext.CurrentContext.Test.FullName.Replace("ProxyFoo.Tests.", "");
+            foreach (var c in Path.GetInvalidFileNameChars())
+                assemblyName = assemblyName.Replace(c, '_');
             var assemblyPath = assemblyName + ".dll";
             if (File.Exists(assemblyPath))
                 File.Delete(assemblyPath);
