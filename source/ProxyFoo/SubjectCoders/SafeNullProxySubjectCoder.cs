@@ -37,17 +37,32 @@ namespace ProxyFoo.SubjectCoders
 
         public virtual void GenerateMethod(PropertyInfo pi, MethodInfo mi, ILGenerator gen)
         {
+            // Set default values for out parameters
+            foreach (var par in mi.GetParameters().Where(p => p.IsOut))
+            {
+                var defaultAttr = par.GetCustomAttributes(typeof(SafeDefaultAttribute), true)
+                    .Cast<SafeDefaultAttribute>().FirstOrDefault();
+
+                var type = par.ParameterType.GetElementType();
+                gen.EmitBestLdArg((ushort)(par.Position + 1));
+                if (defaultAttr!=null)
+                    defaultAttr.PushValueAction(gen);
+                else
+                    PushDefaultReturnValue(gen, type);
+                gen.EmitStoreToRef(type);
+            }
+
+            // Set default value for return types
             if (mi.ReturnType!=typeof(void))
             {
                 MemberInfo attrSource = mi;
                 if (pi!=null)
                     attrSource = pi;
 
-                var nullAttribute = attrSource.GetCustomAttributes(typeof(SafeDefaultAttribute), true)
+                var defaultAttr = attrSource.GetCustomAttributes(typeof(SafeDefaultAttribute), true)
                     .Cast<SafeDefaultAttribute>().FirstOrDefault();
-
-                if (nullAttribute!=null)
-                    nullAttribute.PushValueAction(gen);
+                if (defaultAttr!=null)
+                    defaultAttr.PushValueAction(gen);
                 else
                     PushDefaultReturnValue(gen, mi.ReturnType);
             }

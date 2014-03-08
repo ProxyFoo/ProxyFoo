@@ -213,5 +213,67 @@ namespace ProxyFoo.Tests.Functional
             object result = (new TestMethodWithNoArgs()).Safe<ITestMethodWithNoArgs>();
             Assert.That(result.MethodExists<ITestMethodWithNoArgs>(a => a.Test()));
         }
+
+        public interface ITestMethodWithOutParam
+        {
+            void GetAnswer(out int value);
+        }
+
+        public class TestMethodWithOutParam : ITestMethodWithOutParam
+        {
+            public void GetAnswer(out int value)
+            {
+                value = 42;
+            }
+        }
+
+        [Test]
+        public void ReturnsDefaultValueOnOutParamForNullProxy()
+        {
+            var safe = ((object)null).Safe<ITestMethodWithOutParam>();
+            int result = 42;
+            safe.GetAnswer(out result);
+            Assert.That(result, Is.Not.EqualTo(42));
+        }
+
+        [Test]
+        public void ReturnsResultValueOnOutParamForDirectProxy()
+        {
+            var safe = (new TestMethodWithOutParam()).Safe<ITestMethodWithOutParam>();
+            int result = 0;
+            safe.GetAnswer(out result);
+            Assert.That(result, Is.EqualTo(42));
+        }
+
+        public interface ITestMethodWithRefParam
+        {
+            void GetAnswer(ref int value);
+        }
+
+        public class TestMethodWithRefParam : ITestMethodWithRefParam
+        {
+            public void GetAnswer(ref int value)
+            {
+                value++;
+            }
+        }
+
+        [Test]
+        public void DoesNotTouchValueOnRefParamForNullProxy()
+        {
+            var safe = ((object)null).Safe<ITestMethodWithRefParam>();
+            int result = 42;
+            safe.GetAnswer(ref result);
+            Assert.That(result, Is.EqualTo(42));
+        }
+
+        [Test]
+        public void DoesNotTouchValueOnRefParamForDirectProxy()
+        {
+            var safe = (new TestMethodWithRefParam()).Safe<ITestMethodWithRefParam>();
+            int result = 41;
+            safe.GetAnswer(ref result);
+            Assert.That(result, Is.EqualTo(42));
+        }
     }
 }

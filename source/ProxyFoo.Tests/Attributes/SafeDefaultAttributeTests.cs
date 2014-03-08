@@ -60,5 +60,19 @@ namespace ProxyFoo.Tests.Attributes
             var t = GetTestTarget();
             Assert.That(t.DefaultInt, Is.EqualTo(1));
         }
+
+        public interface IDefaultValueOnOutParam
+        {
+            void GetAnswer([SafeDefault(42)] out int value);
+        }
+
+        [Test]
+        public void SafeDefaultForOutParamAttrReturned()
+        {
+            var safe = ((object)null).Safe<IDefaultValueOnOutParam>();
+            int result = 0;
+            safe.GetAnswer(out result);
+            Assert.That(result, Is.EqualTo(42));
+        }
     }
 }

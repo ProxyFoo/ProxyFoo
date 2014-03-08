@@ -21,7 +21,7 @@ using System.Reflection.Emit;
 
 namespace ProxyFoo.Attributes
 {
-    [AttributeUsage(AttributeTargets.Method | AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
+    [AttributeUsage(AttributeTargets.Method | AttributeTargets.Property | AttributeTargets.Parameter, AllowMultiple = false, Inherited = true)]
     public class SafeDefaultAttribute : Attribute
     {
         readonly Action<ILGenerator> _pushValueAction;
