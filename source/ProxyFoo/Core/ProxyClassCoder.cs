@@ -25,7 +25,7 @@ using ProxyFoo.Core.Foo;
 
 namespace ProxyFoo.Core
 {
-    public class ProxyClassCoder : IProxyClassCoder, IProxyCoderContext
+    public class ProxyClassCoder : IProxyCoderContext
     {
         static readonly ConstructorInfo ObjectCtor;
         readonly ProxyClassDescriptor _pcd;

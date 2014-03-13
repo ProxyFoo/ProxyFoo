@@ -83,7 +83,6 @@
     <Compile Include="Core\ISubjectCoder.cs" />
     <Compile Include="Core\IMixinDescriptor.cs" />
     <Compile Include="Core\MixinBase.cs" />
-    <Compile Include="Core\IProxyClassCoder.cs" />
     <Compile Include="Core\SubjectBase.cs" />
     <Compile Include="Core\ProxyClassDescriptor.cs" />
     <Compile Include="Duck.cs" />
