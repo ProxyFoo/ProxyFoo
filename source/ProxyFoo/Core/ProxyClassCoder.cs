@@ -142,7 +142,7 @@ namespace ProxyFoo.Core
                         MethodAttributes.Public | MethodAttributes.SpecialName | MethodAttributes.Virtual |
                         MethodAttributes.Final |
                         MethodAttributes.HideBySig | MethodAttributes.NewSlot);
-                    newGetMethod.SetReturnType(miGet.ReturnType);
+                    CopyMethodSignature(newGetMethod, miGet);
                     sc.GenerateMethod(pi, miGet, newGetMethod.GetILGenerator());
                     completed.Add(miGet);
                     property.SetGetMethod(newGetMethod);
@@ -156,7 +156,7 @@ namespace ProxyFoo.Core
                         MethodAttributes.Public | MethodAttributes.SpecialName | MethodAttributes.Virtual |
                         MethodAttributes.Final |
                         MethodAttributes.HideBySig | MethodAttributes.NewSlot);
-                    newSetMethod.SetParameters(new[] {pi.PropertyType});
+                    CopyMethodSignature(newSetMethod, miSet);
                     sc.GenerateMethod(pi, miSet, newSetMethod.GetILGenerator());
                     completed.Add(miSet);
                     property.SetSetMethod(newSetMethod);
@@ -188,12 +188,16 @@ namespace ProxyFoo.Core
                     }
                 }
 
-                method.SetReturnType(mi.ReturnType);
-                var pars = mi.GetParameters();
-                method.SetParameters(pars.Select(p => p.ParameterType).ToArray());
-
+                CopyMethodSignature(method, mi);
                 sc.GenerateMethod(null, mi, method.GetILGenerator());
             }
+        }
+
+        void CopyMethodSignature(MethodBuilder method, MethodInfo fromMethod)
+        {
+            method.SetReturnType(fromMethod.ReturnType);
+            var pars = fromMethod.GetParameters();
+            method.SetParameters(pars.Select(p => p.ParameterType).ToArray());
         }
 
         class ConstructorArgInfo

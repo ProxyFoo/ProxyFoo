@@ -64,6 +64,7 @@
     <Compile Include="Core\Bindings\StandardMethodBindingTests.cs" />
     <Compile Include="Core\ILGenerator+ExtensionsTests.cs" />
     <Compile Include="EqualityTestsBase.cs" />
+    <Compile Include="Functional\DirectProxyTests.cs" />
     <Compile Include="Functional\ProxyClassCoderTests.cs" />
     <Compile Include="Mixins\DynamicPropertySourceMixinTests.cs" />
     <Compile Include="Functional\DictionaryProxyTests.cs" />
