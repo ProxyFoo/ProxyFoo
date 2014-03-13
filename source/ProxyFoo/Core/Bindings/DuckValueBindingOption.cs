@@ -25,7 +25,7 @@ namespace ProxyFoo.Core.Bindings
     {
         public abstract bool Bindable { get; }
         public abstract int Score { get; }
-        public abstract void GenerateConversion(ProxyModule proxyModule, ILGenerator gen);
+        public abstract void GenerateConversion(IProxyModuleCoderAccess proxyModule, ILGenerator gen);
 
         internal static DuckValueBindingOption NotBindable = new NotBindableValueBinding();
 

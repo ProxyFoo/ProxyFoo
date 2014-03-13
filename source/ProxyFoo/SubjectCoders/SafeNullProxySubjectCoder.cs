@@ -28,9 +28,9 @@ namespace ProxyFoo.SubjectCoders
 {
     public class SafeNullProxySubjectCoder : ISubjectCoder
     {
-        readonly ProxyModule _proxyModule;
+        readonly IProxyModuleCoderAccess _proxyModule;
 
-        public SafeNullProxySubjectCoder(ProxyModule proxyModule)
+        public SafeNullProxySubjectCoder(IProxyModuleCoderAccess proxyModule)
         {
             _proxyModule = proxyModule;
         }

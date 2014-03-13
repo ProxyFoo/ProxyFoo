@@ -59,11 +59,6 @@ namespace ProxyFoo.Core
             get { return _mixins; }
         }
 
-        public IProxyClassCoder CreateProxyClassCoder(ProxyModule pm)
-        {
-            return new ProxyClassCoder(pm, this);
-        }
-
         public bool Equals(ProxyClassDescriptor other)
         {
             if (ReferenceEquals(null, other))

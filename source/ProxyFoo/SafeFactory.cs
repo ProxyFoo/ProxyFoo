@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Concurrent;
 using ProxyFoo.Core;
+using ProxyFoo.Core.Foo;
 using ProxyFoo.Mixins;
 using ProxyFoo.Subjects;
 
@@ -73,7 +74,7 @@ namespace ProxyFoo
         {
             var pcd = SafeNullMixin.CreateDefaultDescriptorFor(type);
             Type proxyType = _proxyModule.GetTypeFromProxyClassDescriptor(pcd);
-            return SafeNullMixin.GetInstanceFieldFrom(proxyType).GetValue(null);
+            return SafeNullMixin.GetInstanceFieldFrom(new FooTypeFromType(proxyType)).GetValue(null);
         }
 
         public object GetSafeProxyForType(Type type, object target)

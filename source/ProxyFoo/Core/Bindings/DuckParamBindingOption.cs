@@ -26,8 +26,8 @@ namespace ProxyFoo.Core.Bindings
     {
         public abstract bool Bindable { get; }
         public abstract int Score { get; }
-        public abstract object GenerateInConversion(Action load, ProxyModule proxyModule, ILGenerator gen);
-        public abstract void GenerateOutConversion(object token, Action load, ProxyModule proxyModule, ILGenerator gen);
+        public abstract object GenerateInConversion(Action load, IProxyModuleCoderAccess proxyModule, ILGenerator gen);
+        public abstract void GenerateOutConversion(object token, Action load, IProxyModuleCoderAccess proxyModule, ILGenerator gen);
 
         internal static DuckParamBindingOption NotBindable = new NotBindableParamBinding();
 

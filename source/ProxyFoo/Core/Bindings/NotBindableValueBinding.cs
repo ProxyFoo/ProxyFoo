@@ -33,7 +33,7 @@ namespace ProxyFoo.Core.Bindings
             get { return Int32.MinValue; }
         }
 
-        public override void GenerateConversion(ProxyModule proxyModule, ILGenerator gen)
+        public override void GenerateConversion(IProxyModuleCoderAccess proxyModule, ILGenerator gen)
         {
             throw new InvalidOperationException("Cannot generate a conversion for a not bindable value");
         }

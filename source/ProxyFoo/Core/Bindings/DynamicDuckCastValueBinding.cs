@@ -56,7 +56,7 @@ namespace ProxyFoo.Core.Bindings
             get { return 2; }
         }
 
-        public override void GenerateConversion(ProxyModule proxyModule, ILGenerator gen)
+        public override void GenerateConversion(IProxyModuleCoderAccess proxyModule, ILGenerator gen)
         {
             var target = gen.DeclareLocal(_fromType);
             gen.Emit(OpCodes.Stloc, target); // store the value to be converted

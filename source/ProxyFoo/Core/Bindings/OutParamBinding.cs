@@ -56,14 +56,14 @@ namespace ProxyFoo.Core.Bindings
             get { return 0; }
         }
 
-        public override object GenerateInConversion(Action load, ProxyModule proxyModule, ILGenerator gen)
+        public override object GenerateInConversion(Action load, IProxyModuleCoderAccess proxyModule, ILGenerator gen)
         {
             var local = gen.DeclareLocal(_toType);
             gen.Emit(OpCodes.Ldloca_S, local);
             return local;
         }
 
-        public override void GenerateOutConversion(object token, Action load, ProxyModule proxyModule, ILGenerator gen)
+        public override void GenerateOutConversion(object token, Action load, IProxyModuleCoderAccess proxyModule, ILGenerator gen)
         {
             var local = (LocalBuilder)token;
             load();

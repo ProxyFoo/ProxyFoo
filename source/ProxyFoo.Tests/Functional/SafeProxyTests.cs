@@ -275,5 +275,38 @@ namespace ProxyFoo.Tests.Functional
             safe.GetAnswer(ref result);
             Assert.That(result, Is.EqualTo(42));
         }
+
+        public interface IRecursiveType
+        {
+            IRecursiveType GetInner();
+            int GetAnswer();
+        }
+
+        public class RecursiveType : IRecursiveType
+        {
+            public IRecursiveType GetInner() { return null; }
+            public int GetAnswer()
+            {
+                return 42;
+            }
+        }
+
+        [Test]
+        public void CanSafeProxyRecursiveTypeDefinitionWithNullProxy()
+        {
+            var safe = ((object)null).Safe<IRecursiveType>();
+            var inner = safe.GetInner();
+            Assert.That(inner, Is.Not.Null);
+            Assert.That(inner.GetAnswer(), Is.EqualTo(0));
+        }
+
+        [Test]
+        public void CanSafeProxyRecursiveTypeDefinitionWithDirectProxy()
+        {
+            var safe = (new RecursiveType()).Safe<IRecursiveType>();
+            var inner = safe.GetInner();
+            Assert.That(inner, Is.Not.Null);
+            Assert.That(inner.GetAnswer(), Is.EqualTo(0));
+        }
     }
 }

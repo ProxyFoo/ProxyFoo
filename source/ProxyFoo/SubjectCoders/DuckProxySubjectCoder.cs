@@ -32,7 +32,7 @@ namespace ProxyFoo.SubjectCoders
     {
         static readonly ConstructorInfo MissingMethodConstructor;
         readonly IRealSubjectMixinCoder _rsmc;
-        readonly ProxyModule _proxyModule;
+        readonly IProxyModuleCoderAccess _proxyModule;
         readonly Dictionary<MethodInfo, DuckMethodBindingOption> _bindings;
 
         static DuckProxySubjectCoder()
@@ -40,7 +40,7 @@ namespace ProxyFoo.SubjectCoders
             MissingMethodConstructor = typeof(MissingMethodException).GetConstructor(new[] {typeof(string)});
         }
 
-        public DuckProxySubjectCoder(IRealSubjectMixinCoder rsmc, ProxyModule proxyModule, DuckProxySubject subject)
+        public DuckProxySubjectCoder(IRealSubjectMixinCoder rsmc, IProxyModuleCoderAccess proxyModule, DuckProxySubject subject)
         {
             _rsmc = rsmc;
             _proxyModule = proxyModule;

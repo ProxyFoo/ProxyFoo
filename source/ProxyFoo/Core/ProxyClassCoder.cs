@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
+using ProxyFoo.Core.Foo;
 
 namespace ProxyFoo.Core
 {
@@ -28,9 +29,10 @@ namespace ProxyFoo.Core
     {
         static readonly ConstructorInfo ObjectCtor;
         readonly ProxyClassDescriptor _pcd;
-        readonly ProxyModule _pm;
+        readonly IProxyModuleCoderAccess _pm;
         readonly ModuleBuilder _mb;
         TypeBuilder _tb;
+        IFooTypeBuilder _ftb;
         readonly List<MixinCoderContext> _mixinCoderContexts = new List<MixinCoderContext>();
         readonly List<ConstructorArgInfo> _constructorArgs = new List<ConstructorArgInfo>();
         readonly List<FieldInfo> _fields = new List<FieldInfo>();
@@ -41,7 +43,7 @@ namespace ProxyFoo.Core
             ObjectCtor = typeof(object).GetConstructor(Type.EmptyTypes);
         }
 
-        protected internal ProxyClassCoder(ProxyModule pm, ProxyClassDescriptor pcd)
+        protected internal ProxyClassCoder(IProxyModuleCoderAccess pm, ProxyClassDescriptor pcd)
         {
             _pm = pm;
             _mb = pm.ModuleBuilder;
@@ -53,7 +55,7 @@ namespace ProxyFoo.Core
             get { return _pcd; }
         }
 
-        public ProxyModule ProxyModule
+        public IProxyModuleCoderAccess ProxyModule
         {
             get { return _pm; }
         }
@@ -68,12 +70,14 @@ namespace ProxyFoo.Core
             get { return _mixinCoderContexts; }
         }
 
-        public virtual Type Generate()
+        public virtual Type Generate( Action<IFooTypeBuilder> whenTypeDefined )
         {
             string typeName = _pm.AssemblyName + ".Proxy_" + Guid.NewGuid().ToString("N");
 
             _tb = _mb.DefineType(typeName, TypeAttributes.Class, _pcd.BaseClassType,
                 _pcd.Mixins.SelectMany(m => m.Subjects).Select(s => s.Type).ToArray());
+            _ftb = new FooTypeFromTypeBuilder(_tb);
+            whenTypeDefined(_ftb);
 
             CreateMixinCoderContexts();
             _mixinCoderContexts.ForEach(a => a.SetupCtor());
@@ -97,7 +101,7 @@ namespace ProxyFoo.Core
 
         protected virtual void GenerateConstructor()
         {
-            _ctor = _tb.DefineConstructor(
+            _ctor = _ftb.DefineConstructor(
                 MethodAttributes.Public,
                 CallingConventions.Standard,
                 _constructorArgs.Select(a => a.Type).ToArray());
@@ -333,7 +337,7 @@ namespace ProxyFoo.Core
             {
                 if (_index > 0)
                     throw new Exception("Static fields are not supported on multiple mixin proxies.");
-                var field = _proxyCoder._tb.DefineField(name, type, FieldAttributes.Static | FieldAttributes.Public);
+                var field = _proxyCoder._ftb.DefineField(name, type, FieldAttributes.Static | FieldAttributes.Public);
                 _proxyCoder._fields.Add(field);
                 return field;
             }

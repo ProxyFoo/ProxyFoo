@@ -42,6 +42,6 @@ namespace ProxyFoo.Core.Bindings
             get { return 0; }
         }
 
-        public override void GenerateConversion(ProxyModule proxyModule, ILGenerator gen) {}
+        public override void GenerateConversion(IProxyModuleCoderAccess proxyModule, ILGenerator gen) {}
     }
 }

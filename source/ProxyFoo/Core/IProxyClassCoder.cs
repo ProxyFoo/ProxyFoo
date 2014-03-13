@@ -17,11 +17,12 @@
 #endregion
 
 using System;
+using ProxyFoo.Core.Foo;
 
 namespace ProxyFoo.Core
 {
     public interface IProxyClassCoder
     {
-        Type Generate();
+        Type Generate(Action<IFooTypeBuilder> whenTypeDefined);
     }
 }

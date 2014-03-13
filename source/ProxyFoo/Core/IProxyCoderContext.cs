@@ -25,7 +25,7 @@ namespace ProxyFoo.Core
     public interface IProxyCoderContext
     {
         ProxyClassDescriptor Descriptor { get; }
-        ProxyModule ProxyModule { get; }
+        IProxyModuleCoderAccess ProxyModule { get; }
         ModuleBuilder ModuleBuilder { get; }
         IEnumerable<IMixinCoderContext> MixinCoderContexts { get; }
     }

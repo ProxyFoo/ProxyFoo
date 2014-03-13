@@ -62,7 +62,7 @@ namespace ProxyFoo.Core.Bindings
             get { return -1; }
         }
 
-        public override void GenerateConversion(ProxyModule proxyModule, ILGenerator gen)
+        public override void GenerateConversion(IProxyModuleCoderAccess proxyModule, ILGenerator gen)
         {
             var toTypeCtor = _toType.GetConstructor(new[] {_coreToType});
             if (!_fromTypeNullable)

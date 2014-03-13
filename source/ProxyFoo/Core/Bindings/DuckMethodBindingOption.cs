@@ -30,7 +30,7 @@ namespace ProxyFoo.Core.Bindings
         /// <summary>
         /// Must be called with the real subject on the stack of the body being generated.
         /// </summary>
-        public abstract void GenerateCall(ProxyModule proxyModule, ILGenerator gen);
+        public abstract void GenerateCall(IProxyModuleCoderAccess proxyModule, ILGenerator gen);
 
         internal static DuckMethodBindingOption NotBindable = new NotBindableMethodBinding();
 

@@ -77,7 +77,7 @@ namespace ProxyFoo.Core.Bindings
             get { return _score; }
         }
 
-        public override void GenerateCall(ProxyModule proxyModule, ILGenerator gen)
+        public override void GenerateCall(IProxyModuleCoderAccess proxyModule, ILGenerator gen)
         {
             var pars = _adaptee.GetParameters();
             var targetPars = _target.GetParameters();

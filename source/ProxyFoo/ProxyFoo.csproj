@@ -62,9 +62,14 @@
     <Compile Include="Core\Bindings\DuckMethodBindingOption.cs" />
     <Compile Include="Core\Bindings\DuckValueBindingOption.cs" />
     <Compile Include="Core\FactoryAccessor.cs" />
+    <Compile Include="Core\Foo\FooTypeFromType.cs" />
+    <Compile Include="Core\Foo\FooTypeFromTypeBuilder.cs" />
+    <Compile Include="Core\Foo\IFooType.cs" />
+    <Compile Include="Core\Foo\IFooTypeBuilder.cs" />
     <Compile Include="Core\IProxyCodeBuilder.cs" />
     <Compile Include="Core\IPerSubjectCoderFactory.cs" />
     <Compile Include="Core\IProxyCtorBuilder.cs" />
+    <Compile Include="Core\IProxyModuleCoderAccess.cs" />
     <Compile Include="Core\MixinCoders\IComputeMethodExistsCoder.cs" />
     <Compile Include="Core\MixinCoders\IDynamicPropertySourceMixinCoder.cs" />
     <Compile Include="Core\SubjectTypes\IComputeMethodExistsResult.cs" />

@@ -1,6 +1,6 @@
-#region Apache License Notice
+﻿#region Apache License Notice
 
-// Copyright � 2014, Silverlake Software LLC
+// Copyright © 2014, Silverlake Software LLC
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,25 +17,14 @@
 #endregion
 
 using System;
-using System.Reflection.Emit;
+using System.Reflection;
 
-namespace ProxyFoo.Core.Bindings
+namespace ProxyFoo.Core.Foo
 {
-    class NotBindableMethodBinding : DuckMethodBindingOption
+    public interface IFooType
     {
-        public override bool Bindable
-        {
-            get { return false; }
-        }
-
-        public override int Score
-        {
-            get { return Int32.MinValue; }
-        }
-
-        public override void GenerateCall(IProxyModuleCoderAccess proxyModule, ILGenerator gen)
-        {
-            throw new InvalidOperationException("Cannot generate a call for not bindable method");
-        }
+        Type AsType();
+        FieldInfo GetField(string name);
+        ConstructorInfo GetConstructor(Type[] types);
     }
 }

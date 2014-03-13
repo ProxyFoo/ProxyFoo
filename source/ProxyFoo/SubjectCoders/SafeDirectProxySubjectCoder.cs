@@ -20,6 +20,7 @@ using System;
 using System.Reflection;
 using System.Reflection.Emit;
 using ProxyFoo.Core;
+using ProxyFoo.Core.Foo;
 using ProxyFoo.Core.MixinCoders;
 using ProxyFoo.Mixins;
 using ProxyFoo.Subjects;
@@ -29,9 +30,9 @@ namespace ProxyFoo.SubjectCoders
     class SafeDirectProxySubjectCoder : ISubjectCoder
     {
         readonly IRealSubjectMixinCoder _rsmc;
-        readonly ProxyModule _proxyModule;
+        readonly IProxyModuleCoderAccess _proxyModule;
 
-        public SafeDirectProxySubjectCoder(IRealSubjectMixinCoder rsmc, ProxyModule proxyModule)
+        public SafeDirectProxySubjectCoder(IRealSubjectMixinCoder rsmc, IProxyModuleCoderAccess proxyModule)
         {
             if (rsmc==null)
                 throw new ArgumentNullException("rsmc");
@@ -79,7 +80,7 @@ namespace ProxyFoo.SubjectCoders
             // from the method call on the real subject).
             var pcd = new ProxyClassDescriptor(
                 new RealSubjectMixin(returnType, new SafeDirectProxySubject(returnType), new SafeProxyMetaSubject()));
-            Type proxyType = _proxyModule.GetTypeFromProxyClassDescriptor(pcd);
+            IFooType proxyType = _proxyModule.GetTypeFromProxyClassDescriptor(pcd);
             var ctor = proxyType.GetConstructor(new[] {returnType});
             // ReSharper disable once AssignNullToNotNullAttribute
             gen.Emit(OpCodes.Newobj, ctor);

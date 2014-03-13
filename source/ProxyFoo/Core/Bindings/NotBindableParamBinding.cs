@@ -33,12 +33,12 @@ namespace ProxyFoo.Core.Bindings
             get { return Int32.MinValue; }
         }
 
-        public override object GenerateInConversion(Action load, ProxyModule proxyModule, ILGenerator gen)
+        public override object GenerateInConversion(Action load, IProxyModuleCoderAccess proxyModule, ILGenerator gen)
         {
             throw new InvalidOperationException("Cannot generate an in-conversion for a not bindable param");
         }
 
-        public override void GenerateOutConversion(object token, Action load, ProxyModule proxyModule, ILGenerator gen)
+        public override void GenerateOutConversion(object token, Action load, IProxyModuleCoderAccess proxyModule, ILGenerator gen)
         {
             throw new InvalidOperationException("Cannot generate an out-conversion for a not bindable param");
         }

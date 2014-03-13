@@ -17,26 +17,32 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Emit;
-using ProxyFoo.Core;
+using System.Reflection;
 
-namespace ProxyFoo.Tests
+namespace ProxyFoo.Core.Foo
 {
-    public class NullProxyCoderContext : IProxyCoderContext
+    sealed class FooTypeFromType : IFooType
     {
-        public NullProxyCoderContext()
+        readonly Type _type;
+
+        public FooTypeFromType(Type type)
         {
-            Descriptor = null;
-            ProxyModule = null;
-            ModuleBuilder = null;
-            MixinCoderContexts = Enumerable.Empty<IMixinCoderContext>();
+            _type = type;
         }
 
-        public ProxyClassDescriptor Descriptor { get; private set; }
-        public IProxyModuleCoderAccess ProxyModule { get; private set; }
-        public ModuleBuilder ModuleBuilder { get; private set; }
-        public IEnumerable<IMixinCoderContext> MixinCoderContexts { get; private set; }
+        public Type AsType()
+        {
+            return _type;
+        }
+
+        public ConstructorInfo GetConstructor(Type[] types)
+        {
+            return _type.GetConstructor(types);
+        }
+
+        public FieldInfo GetField(string name)
+        {
+            return _type.GetField(name);
+        }
     }
 }

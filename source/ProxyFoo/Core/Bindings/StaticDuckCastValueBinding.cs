@@ -26,6 +26,7 @@ namespace ProxyFoo.Core.Bindings
 {
     class StaticDuckCastValueBinding : DuckValueBindingOption
     {
+        readonly Type _fromType;
         readonly ProxyClassDescriptor _pcd;
 
         internal static DuckValueBindingOption TryBind(Type fromType, Type toType)
@@ -38,12 +39,13 @@ namespace ProxyFoo.Core.Bindings
                 new MethodExistsProxyMetaMixin(),
                 new RealSubjectMixin(fromType, new DuckProxySubject(toType)));
 
-            return pcd.IsValid() ? new StaticDuckCastValueBinding(pcd) : null;
+            return pcd.IsValid() ? new StaticDuckCastValueBinding(pcd,fromType) : null;
         }
 
-        StaticDuckCastValueBinding(ProxyClassDescriptor pcd)
+        StaticDuckCastValueBinding(ProxyClassDescriptor pcd, Type fromType)
         {
             _pcd = pcd;
+            _fromType = fromType;
         }
 
         public override bool Bindable
@@ -56,10 +58,10 @@ namespace ProxyFoo.Core.Bindings
             get { return 2; }
         }
 
-        public override void GenerateConversion(ProxyModule proxyModule, ILGenerator gen)
+        public override void GenerateConversion(IProxyModuleCoderAccess proxyModule, ILGenerator gen)
         {
             var proxyType = proxyModule.GetTypeFromProxyClassDescriptor(_pcd);
-            var ctor = proxyType.GetConstructors().First();
+            var ctor = proxyType.GetConstructor(new[] {_fromType});
             gen.Emit(OpCodes.Newobj, ctor);
         }
     }

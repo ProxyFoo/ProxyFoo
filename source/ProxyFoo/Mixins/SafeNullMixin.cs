@@ -19,6 +19,7 @@
 using System;
 using System.Reflection;
 using ProxyFoo.Core;
+using ProxyFoo.Core.Foo;
 using ProxyFoo.MixinCoders;
 using ProxyFoo.Subjects;
 
@@ -42,7 +43,7 @@ namespace ProxyFoo.Mixins
             return pcd;
         }
 
-        public static FieldInfo GetInstanceFieldFrom(Type proxyType)
+        public static FieldInfo GetInstanceFieldFrom(IFooType proxyType)
         {
             return proxyType.GetField(InstanceFieldName);
         }

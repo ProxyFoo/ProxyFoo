@@ -50,13 +50,13 @@ namespace ProxyFoo.Core.Bindings
             get { return _valueBinding.Score; }
         }
 
-        public override object GenerateInConversion(Action load, ProxyModule proxyModule, ILGenerator gen)
+        public override object GenerateInConversion(Action load, IProxyModuleCoderAccess proxyModule, ILGenerator gen)
         {
             load();
             _valueBinding.GenerateConversion(proxyModule, gen);
             return null;
         }
 
-        public override void GenerateOutConversion(object token, Action load, ProxyModule proxyModule, ILGenerator gen) {}
+        public override void GenerateOutConversion(object token, Action load, IProxyModuleCoderAccess proxyModule, ILGenerator gen) {}
     }
 }

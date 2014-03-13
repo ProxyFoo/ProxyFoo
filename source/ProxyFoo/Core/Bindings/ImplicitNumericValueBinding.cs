@@ -50,7 +50,7 @@ namespace ProxyFoo.Core.Bindings
             get { return -1; }
         }
 
-        public override void GenerateConversion(ProxyModule proxyModule, ILGenerator gen)
+        public override void GenerateConversion(IProxyModuleCoderAccess proxyModule, ILGenerator gen)
         {
             if (_targetType==typeof(double) && _type==typeof(float))
                 return;

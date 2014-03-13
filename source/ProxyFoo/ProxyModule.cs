@@ -18,13 +18,15 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
 using ProxyFoo.Core;
+using ProxyFoo.Core.Foo;
 
 namespace ProxyFoo
 {
-    public class ProxyModule
+    public class ProxyModule : IProxyModuleCoderAccess
     {
         const string DefaultAssemblyName = "ProxyFoo.Dynamic";
         const AssemblyBuilderAccess DefaultAccess = AssemblyBuilderAccess.RunAndSave;
@@ -81,7 +83,7 @@ namespace ProxyFoo
             get { return _assemblyName; }
         }
 
-        protected internal ModuleBuilder ModuleBuilder
+        public ModuleBuilder ModuleBuilder
         {
             get
             {
@@ -143,9 +145,15 @@ namespace ProxyFoo
             return _proxyClassTypes.GetOrAdd(pcd, CreateProxyType);
         }
 
+        IFooType IProxyModuleCoderAccess.GetTypeFromProxyClassDescriptor(ProxyClassDescriptor pcd)
+        {
+            return new FooTypeFromType(GetTypeFromProxyClassDescriptor(pcd));
+        }
+
         Type CreateProxyType(ProxyClassDescriptor pcd)
         {
-            return pcd.IsValid() ? pcd.CreateProxyClassCoder(this).Generate() : null;
+            var fooType = new ProxyModuleCoderAccess(this).GetTypeFromProxyClassDescriptor(pcd);
+            return fooType!=null ? fooType.AsType() : null;
         }
 
         void CreateProxyModuleHolder()
@@ -165,6 +173,45 @@ namespace ProxyFoo
             if (_proxyModuleField==null)
                 CreateProxyModuleHolder();
             return _proxyModuleField;
+        }
+
+        class ProxyModuleCoderAccess : IProxyModuleCoderAccess
+        {
+            readonly ProxyModule _proxyModule;
+            readonly Dictionary<ProxyClassDescriptor, IFooTypeBuilder> _typesInProgress = new Dictionary<ProxyClassDescriptor, IFooTypeBuilder>();
+
+            public ProxyModuleCoderAccess(ProxyModule proxyModule)
+            {
+                _proxyModule = proxyModule;
+            }
+
+            public ModuleBuilder ModuleBuilder
+            {
+                get { return _proxyModule.ModuleBuilder; }
+            }
+
+            public string AssemblyName
+            {
+                get { return _proxyModule.AssemblyName; }
+            }
+
+            public IFooType GetTypeFromProxyClassDescriptor(ProxyClassDescriptor pcd)
+            {
+                IFooTypeBuilder result;
+                if (_typesInProgress.TryGetValue(pcd, out result))
+                    return result;
+
+                if (!pcd.IsValid())
+                    return null;
+
+                var pcc = new ProxyClassCoder(this, pcd);
+                return new FooTypeFromType(pcc.Generate(t => _typesInProgress.Add(pcd, t)));
+            }
+
+            public FieldInfo GetProxyModuleField()
+            {
+                return _proxyModule.GetProxyModuleField();
+            }
         }
     }
 }

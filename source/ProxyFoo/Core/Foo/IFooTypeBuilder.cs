@@ -17,26 +17,14 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Reflection;
 using System.Reflection.Emit;
-using ProxyFoo.Core;
 
-namespace ProxyFoo.Tests
+namespace ProxyFoo.Core.Foo
 {
-    public class NullProxyCoderContext : IProxyCoderContext
+    public interface IFooTypeBuilder : IFooType
     {
-        public NullProxyCoderContext()
-        {
-            Descriptor = null;
-            ProxyModule = null;
-            ModuleBuilder = null;
-            MixinCoderContexts = Enumerable.Empty<IMixinCoderContext>();
-        }
-
-        public ProxyClassDescriptor Descriptor { get; private set; }
-        public IProxyModuleCoderAccess ProxyModule { get; private set; }
-        public ModuleBuilder ModuleBuilder { get; private set; }
-        public IEnumerable<IMixinCoderContext> MixinCoderContexts { get; private set; }
+        ConstructorBuilder DefineConstructor(MethodAttributes attributes, CallingConventions callingConvention, Type[] parameterTypes);
+        FieldBuilder DefineField(string fieldName, Type type, FieldAttributes attributes);
     }
 }

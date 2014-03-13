@@ -284,5 +284,27 @@ namespace ProxyFoo.Tests.Functional
             Assert.That(value, Is.EqualTo(42));
             Assert.That(retVal, Is.EqualTo(33));
         }
+
+        public interface IRecursiveSample
+        {
+            IRecursiveSample GetInner();
+        }
+
+        public class RecursiveSample
+        {
+            public RecursiveSample GetInner()
+            {
+                return new RecursiveSample();
+            }
+        }
+
+        [Test]
+        public void CanDuckRecursiveTypeDefinition()
+        {
+            var duck = (new RecursiveSample()).Duck<IRecursiveSample>();
+            Assert.That(duck, Is.Not.Null);
+            Assert.That(duck.GetInner(), Is.Not.Null);
+        }
+
     }
 }

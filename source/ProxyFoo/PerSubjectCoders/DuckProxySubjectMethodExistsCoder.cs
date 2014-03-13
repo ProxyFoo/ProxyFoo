@@ -27,11 +27,11 @@ namespace ProxyFoo.PerSubjectCoders
 {
     public class DuckProxySubjectMethodExistsCoder : ISubjectMethodExistsPerSubjectCoder
     {
-        readonly ProxyModule _proxyModule;
+        readonly IProxyModuleCoderAccess _proxyModule;
         readonly Type _subjectType;
         readonly Type _realSubjectType;
 
-        public DuckProxySubjectMethodExistsCoder(ProxyModule proxyModule, Type subjectType, Type realSubjectType)
+        public DuckProxySubjectMethodExistsCoder(IProxyModuleCoderAccess proxyModule, Type subjectType, Type realSubjectType)
         {
             _proxyModule = proxyModule;
             _subjectType = subjectType;
@@ -72,7 +72,7 @@ namespace ProxyFoo.PerSubjectCoders
             gen.Emit(OpCodes.Ldsfld, field);
         }
 
-        static FieldInfo GenerateStaticType(Type realSubjectType, Type subjectType, ProxyModule proxyModule)
+        static FieldInfo GenerateStaticType(Type realSubjectType, Type subjectType, IProxyModuleCoderAccess proxyModule)
         {
             var mb = proxyModule.ModuleBuilder;
             var fieldType = typeof(ISubjectMethodExists<>).MakeGenericType(subjectType);
