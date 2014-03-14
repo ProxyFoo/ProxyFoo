@@ -81,5 +81,75 @@ namespace ProxyFoo.Tests.Functional
             test[1] = 42;
             Assert.That(test[1], Is.EqualTo(42));
         }
+
+        public interface ISampleMethod1
+        {
+            int GetAnswer();
+        }
+
+        public interface ISampleMethod2
+        {
+            int GetAnswer();
+        }
+
+        public class SampleUniquePrivateMethods : ISampleMethod1, ISampleMethod2
+        {
+            int ISampleMethod1.GetAnswer()
+            {
+                return 41;
+            }
+
+            int ISampleMethod2.GetAnswer()
+            {
+                return 43;
+            }
+        }
+
+        [Test]
+        public void CanDirectProxyUniquePrivateMethods()
+        {
+            var pcd = new ProxyClassDescriptor(new RealSubjectMixin(typeof(SampleUniquePrivateMethods)));
+            var type = ProxyModule.Default.GetTypeFromProxyClassDescriptor(pcd);
+            var test = (ISampleMethod1)Activator.CreateInstance(type, new SampleUniquePrivateMethods());
+            Assert.That(test, Is.Not.TypeOf<SampleUniquePrivateMethods>());
+            Assert.That(test.GetAnswer(), Is.EqualTo(41));
+            var test2 = (ISampleMethod2)test;
+            Assert.That(test2.GetAnswer(), Is.EqualTo(43));
+        }
+
+        public interface ISampleProperty1
+        {
+            int Answer { get; }
+        }
+
+        public interface ISampleProperty2
+        {
+            int Answer { get; }
+        }
+
+        public class SampleUniquePrivateProperties : ISampleProperty1, ISampleProperty2
+        {
+            int ISampleProperty1.Answer
+            {
+                get { return 41; }
+            }
+
+            int ISampleProperty2.Answer
+            {
+                get { return 43; }
+            }
+        }
+
+        [Test]
+        public void CanDirectProxyUniquePrivateProperties()
+        {
+            var pcd = new ProxyClassDescriptor(new RealSubjectMixin(typeof(SampleUniquePrivateProperties)));
+            var type = ProxyModule.Default.GetTypeFromProxyClassDescriptor(pcd);
+            var test = (ISampleProperty1)Activator.CreateInstance(type, new SampleUniquePrivateProperties());
+            Assert.That(test, Is.Not.TypeOf<SampleUniquePrivateProperties>());
+            Assert.That(test.Answer, Is.EqualTo(41));
+            var test2 = (ISampleProperty2)test;
+            Assert.That(test2.Answer, Is.EqualTo(43));
+        }
     }
 }

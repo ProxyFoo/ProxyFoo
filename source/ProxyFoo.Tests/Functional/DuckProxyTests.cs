@@ -17,6 +17,7 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 using ProxyFoo.Attributes;
 using ProxyFoo.ExtensionApi;
@@ -306,5 +307,17 @@ namespace ProxyFoo.Tests.Functional
             Assert.That(duck.GetInner(), Is.Not.Null);
         }
 
+        public interface IForEach<T>
+        {
+            void ForEach(Action<T> action);
+        }
+
+        [Test]
+        public void CanDuckComplexRealWorldTypeWithPrivateImplementations()
+        {
+            var list = new List<int> {42};
+            var feTarget = list.Duck<IForEach<int>>();
+            feTarget.ForEach(a => Assert.That(a, Is.EqualTo(42)));
+        }
     }
 }

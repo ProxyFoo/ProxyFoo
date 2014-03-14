@@ -24,7 +24,9 @@ namespace ProxyFoo.Core.Foo
     public interface IFooType
     {
         Type AsType();
-        FieldInfo GetField(string name);
         ConstructorInfo GetConstructor(Type[] types);
+        FieldInfo GetField(string name);
+        PropertyInfo GetProperty(string name, Type[] types);
+        MethodInfo GetMethod(string name, Type[] types);
     }
 }

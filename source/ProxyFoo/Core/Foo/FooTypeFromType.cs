@@ -44,5 +44,15 @@ namespace ProxyFoo.Core.Foo
         {
             return _type.GetField(name);
         }
+
+        public PropertyInfo GetProperty(string name, Type[] types)
+        {
+            return _type.GetProperty(name, types);
+        }
+
+        public MethodInfo GetMethod(string name, Type[] types)
+        {
+            return _type.GetMethod(name, types);
+        }
     }
 }

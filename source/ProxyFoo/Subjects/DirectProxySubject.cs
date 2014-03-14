@@ -17,6 +17,7 @@
 #endregion
 
 using System;
+using System.Diagnostics;
 using ProxyFoo.Core;
 using ProxyFoo.Core.MixinCoders;
 using ProxyFoo.Core.Mixins;
@@ -26,6 +27,7 @@ using ProxyFoo.SubjectCoders;
 
 namespace ProxyFoo.Subjects
 {
+    [DebuggerDisplay("Direct<{Type}>")]
     public class DirectProxySubject : SubjectBase, IPerSubjectCoderFactory<ISubjectMethodExistsPerSubjectCoder>
     {
         public DirectProxySubject(Type type) : base(type) {}

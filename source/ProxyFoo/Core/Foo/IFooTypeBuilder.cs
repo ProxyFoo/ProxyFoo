@@ -26,5 +26,7 @@ namespace ProxyFoo.Core.Foo
     {
         ConstructorBuilder DefineConstructor(MethodAttributes attributes, CallingConventions callingConvention, Type[] parameterTypes);
         FieldBuilder DefineField(string fieldName, Type type, FieldAttributes attributes);
+        PropertyBuilder DefineProperty(string name, PropertyAttributes attributes, Type returnType, Type[] parameterTypes);
+        MethodBuilder DefineMethod(string name, MethodAttributes attributes, Type returnType, Type[] parameterTypes);
     }
 }

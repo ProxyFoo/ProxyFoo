@@ -70,7 +70,7 @@ namespace ProxyFoo.Core
             get { return _mixinCoderContexts; }
         }
 
-        public virtual Type Generate( Action<IFooTypeBuilder> whenTypeDefined )
+        public virtual Type Generate(Action<IFooTypeBuilder> whenTypeDefined)
         {
             string typeName = _pm.AssemblyName + ".Proxy_" + Guid.NewGuid().ToString("N");
 
@@ -128,21 +128,12 @@ namespace ProxyFoo.Core
 
             foreach (var pi in type.GetProperties())
             {
-                var property = _tb.DefineProperty(
-                    pi.Name,
-                    PropertyAttributes.None,
-                    pi.PropertyType,
-                    null);
+                var property = DefineProperty(pi);
 
                 if (pi.CanRead)
                 {
                     var miGet = pi.GetGetMethod();
-                    var newGetMethod = _tb.DefineMethod(
-                        miGet.Name,
-                        MethodAttributes.Public | MethodAttributes.SpecialName | MethodAttributes.Virtual |
-                        MethodAttributes.Final |
-                        MethodAttributes.HideBySig | MethodAttributes.NewSlot);
-                    CopyMethodSignature(newGetMethod, miGet);
+                    var newGetMethod = DefineMethod(miGet);
                     sc.GenerateMethod(pi, miGet, newGetMethod.GetILGenerator());
                     completed.Add(miGet);
                     property.SetGetMethod(newGetMethod);
@@ -151,12 +142,7 @@ namespace ProxyFoo.Core
                 if (pi.CanWrite)
                 {
                     var miSet = pi.GetSetMethod();
-                    var newSetMethod = _tb.DefineMethod(
-                        miSet.Name,
-                        MethodAttributes.Public | MethodAttributes.SpecialName | MethodAttributes.Virtual |
-                        MethodAttributes.Final |
-                        MethodAttributes.HideBySig | MethodAttributes.NewSlot);
-                    CopyMethodSignature(newSetMethod, miSet);
+                    var newSetMethod = DefineMethod(miSet);
                     sc.GenerateMethod(pi, miSet, newSetMethod.GetILGenerator());
                     completed.Add(miSet);
                     property.SetSetMethod(newSetMethod);
@@ -165,39 +151,61 @@ namespace ProxyFoo.Core
 
             foreach (var mi in type.GetMethods().Where(mi => !completed.Contains(mi)))
             {
-                var method = _tb.DefineMethod(
-                    mi.Name,
-                    MethodAttributes.Public | MethodAttributes.Virtual | MethodAttributes.Final |
-                    MethodAttributes.HideBySig | MethodAttributes.NewSlot);
-
-                var genArgs = mi.GetGenericArguments();
-                if (genArgs.Length > 0)
-                {
-                    var builders = method.DefineGenericParameters(genArgs.Select(a => a.Name).ToArray());
-                    for (int i = 0; i < genArgs.Length; ++i)
-                    {
-                        var genArg = genArgs[i];
-                        var builder = builders[i];
-
-                        builder.SetGenericParameterAttributes(genArg.GenericParameterAttributes);
-                        var constraints = genArg.GetGenericParameterConstraints();
-                        var baseTypeConstraint = constraints.SingleOrDefault(a => a.IsClass);
-                        if (baseTypeConstraint!=null)
-                            builder.SetBaseTypeConstraint(baseTypeConstraint);
-                        builder.SetInterfaceConstraints(constraints.Where(a => !a.IsClass).ToArray());
-                    }
-                }
-
-                CopyMethodSignature(method, mi);
+                var method = DefineMethod(mi);
                 sc.GenerateMethod(null, mi, method.GetILGenerator());
             }
         }
 
-        void CopyMethodSignature(MethodBuilder method, MethodInfo fromMethod)
+        PropertyBuilder DefineProperty(PropertyInfo fromProperty)
         {
-            method.SetReturnType(fromMethod.ReturnType);
-            var pars = fromMethod.GetParameters();
-            method.SetParameters(pars.Select(p => p.ParameterType).ToArray());
+            var name = fromProperty.Name;
+            var parTypes = fromProperty.GetIndexParameters().Select(p => p.ParameterType).ToArray();
+            var existingProperty = _ftb.GetProperty(name, parTypes);
+            if (existingProperty!=null)
+                name = GetPrefixForPrivateImplementation(fromProperty.DeclaringType) + name;
+            return _ftb.DefineProperty(name, PropertyAttributes.None, fromProperty.PropertyType, parTypes);
+        }
+
+        MethodBuilder DefineMethod(MethodInfo fromMethod)
+        {
+            var name = fromMethod.Name;
+            var parTypes = fromMethod.GetParameters().Select(p => p.ParameterType).ToArray();
+            var existingMethod = _ftb.GetMethod(name, parTypes);
+
+            var methodAttrs = (existingMethod==null ? MethodAttributes.Public : MethodAttributes.Private) |
+                              MethodAttributes.Virtual | MethodAttributes.Final |
+                              MethodAttributes.HideBySig | MethodAttributes.NewSlot;
+            if (existingMethod!=null)
+                name = GetPrefixForPrivateImplementation(fromMethod.DeclaringType) + name;
+            var method = _ftb.DefineMethod(name, methodAttrs, fromMethod.ReturnType, parTypes);
+
+            var genArgs = fromMethod.GetGenericArguments();
+            if (genArgs.Length > 0)
+            {
+                var builders = method.DefineGenericParameters(genArgs.Select(a => a.Name).ToArray());
+                for (int i = 0; i < genArgs.Length; ++i)
+                {
+                    var genArg = genArgs[i];
+                    var builder = builders[i];
+
+                    builder.SetGenericParameterAttributes(genArg.GenericParameterAttributes);
+                    var constraints = genArg.GetGenericParameterConstraints();
+                    var baseTypeConstraint = constraints.SingleOrDefault(a => a.IsClass);
+                    if (baseTypeConstraint!=null)
+                        builder.SetBaseTypeConstraint(baseTypeConstraint);
+                    builder.SetInterfaceConstraints(constraints.Where(a => !a.IsClass).ToArray());
+                }
+            }
+
+            if (existingMethod!=null)
+                _tb.DefineMethodOverride(method, fromMethod);
+
+            return method;
+        }
+
+        static string GetPrefixForPrivateImplementation(Type type)
+        {
+            return (type.IsGenericType ? type.GetGenericTypeDefinition().FullName : type.FullName) + ".";
         }
 
         class ConstructorArgInfo

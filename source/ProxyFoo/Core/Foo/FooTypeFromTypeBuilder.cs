@@ -28,7 +28,7 @@ namespace ProxyFoo.Core.Foo
     {
         readonly TypeBuilder _typeBuilder;
         readonly List<MemberInfo> _members = new List<MemberInfo>();
-        readonly Dictionary<ConstructorBuilder, Type[]> _paramsByConstructor = new Dictionary<ConstructorBuilder, Type[]>();
+        readonly Dictionary<MemberInfo, Type[]> _paramsByMember = new Dictionary<MemberInfo, Type[]>();
 
         public FooTypeFromTypeBuilder(TypeBuilder typeBuilder)
         {
@@ -44,7 +44,7 @@ namespace ProxyFoo.Core.Foo
         {
             var cb = _typeBuilder.DefineConstructor(attributes, callingConvention, parameterTypes);
             _members.Add(cb);
-            _paramsByConstructor.Add(cb, parameterTypes);
+            _paramsByMember.Add(cb, parameterTypes);
             return cb;
         }
 
@@ -55,14 +55,40 @@ namespace ProxyFoo.Core.Foo
             return fb;
         }
 
+        public PropertyBuilder DefineProperty(string name, PropertyAttributes attributes, Type returnType, Type[] parameterTypes)
+        {
+            var pb = _typeBuilder.DefineProperty(name, attributes, returnType, parameterTypes);
+            _members.Add(pb);
+            _paramsByMember.Add(pb, parameterTypes);
+            return pb;
+        }
+
+        public MethodBuilder DefineMethod(string name, MethodAttributes attributes, Type returnType, Type[] parameterTypes)
+        {
+            var mb = _typeBuilder.DefineMethod(name, attributes, returnType, parameterTypes);
+            _members.Add(mb);
+            _paramsByMember.Add(mb, parameterTypes);
+            return mb;
+        }
+
         public ConstructorInfo GetConstructor(Type[] types)
         {
-            return _members.OfType<ConstructorBuilder>().SingleOrDefault(c => _paramsByConstructor[c].SequenceEqual(types));
+            return _members.OfType<ConstructorBuilder>().SingleOrDefault(c => _paramsByMember[c].SequenceEqual(types));
         }
 
         public FieldInfo GetField(string name)
         {
             return _members.OfType<FieldInfo>().SingleOrDefault(a => a.IsPublic && a.Name==name);
+        }
+
+        public PropertyInfo GetProperty(string name, Type[] types)
+        {
+            return _members.OfType<PropertyBuilder>().SingleOrDefault(p => p.Name==name && _paramsByMember[p].SequenceEqual(types));
+        }
+
+        public MethodInfo GetMethod(string name, Type[] types)
+        {
+            return _members.OfType<MethodBuilder>().SingleOrDefault(m => m.Name==name && _paramsByMember[m].SequenceEqual(types));
         }
     }
 }
