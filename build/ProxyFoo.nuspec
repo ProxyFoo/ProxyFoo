@@ -3,14 +3,18 @@
 <package>
     <metadata>
         <id>ProxyFoo</id>
-        <version>0.2.0</version>
+        <version>0.2.1</version>
         <authors>Silverlake Software LLC</authors>
         <owners>Jamie da Silva</owners>
         <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0.html</licenseUrl>
         <projectUrl>https://github.com/ProxyFoo/ProxyFoo</projectUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>ProxyFoo is a library for the .NET Framework to facilitate creating high-performance proxies for Duck casting, null safe wrappers, and other uses</description>
-        <releaseNotes>Add support for out/ref parameters and recursive type definitions.</releaseNotes>
+        <releaseNotes>v0.2.0:
+- Add support for out/ref parameters and recursive type definitions.
+v0.2.1:
+- Fix peverify fails if members are repeated in multiple subject interfaces.
+- Fix proxy member generation for property indexers.</releaseNotes>
         <copyright>Copyright 2014 Silverlake Software LLC.  Licensed under the Apache License, Version 2.0.</copyright>
         <tags>ProxyFoo Duck DuckTyping dynamic</tags>
     </metadata>
