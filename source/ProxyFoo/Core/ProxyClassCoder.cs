@@ -82,8 +82,8 @@ namespace ProxyFoo.Core
             CreateMixinCoderContexts();
             _mixinCoderContexts.ForEach(a => a.SetupCtor());
             GenerateConstructor();
-            _mixinCoderContexts.ForEach(a => a.CreateSubjectCoderContexts());
             _mixinCoderContexts.ForEach(a => a.Generate());
+            _mixinCoderContexts.ForEach(a => a.CreateSubjectCoderContexts());
             _mixinCoderContexts.ForEach(a => a.GenerateSubjects());
 
             return _tb.CreateType();
@@ -252,15 +252,15 @@ namespace ProxyFoo.Core
                 _mixinCoder.SetupCtor(pcb);
             }
 
-            internal void CreateSubjectCoderContexts()
-            {
-                _pcb = new ProxyCodeBuilder(_proxyCoder, _index);
-                _subjectCoderStates = _mixin.Subjects.Select(a => new SubjectCoderContext(_pcb, _mixinCoder, a)).ToList();
-            }
-
             internal void Generate()
             {
+                _pcb = new ProxyCodeBuilder(_proxyCoder, _index);
                 _mixinCoder.Generate(_pcb);
+            }
+
+            internal void CreateSubjectCoderContexts()
+            {
+                _subjectCoderStates = _mixin.Subjects.Select(a => new SubjectCoderContext(_pcb, _mixinCoder, a)).ToList();
             }
 
             internal void GenerateSubjects()
