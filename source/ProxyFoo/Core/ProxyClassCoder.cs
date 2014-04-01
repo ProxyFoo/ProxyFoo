@@ -124,35 +124,34 @@ namespace ProxyFoo.Core
 
         internal void GenerateMethods(Type type, ISubjectCoder sc)
         {
-            var completed = new HashSet<MethodInfo>();
-
-            foreach (var pi in type.GetProperties())
+            var definedProperties = new Dictionary<PropertyInfo, PropertyBuilder>();
+            foreach (var subjectMethod in SubjectMethod.GetAllForType(type))
             {
-                var property = DefineProperty(pi);
-
-                if (pi.CanRead)
+                var pi = subjectMethod.PropertyInfo;
+                var mi = subjectMethod.MethodInfo;
+                if (pi != null)
                 {
-                    var miGet = pi.GetGetMethod();
-                    var newGetMethod = DefineMethod(miGet);
-                    sc.GenerateMethod(pi, miGet, newGetMethod.GetILGenerator());
-                    completed.Add(miGet);
-                    property.SetGetMethod(newGetMethod);
-                }
+                    // If this is the first method in the property, define the property
+                    PropertyBuilder property;
+                    if (!definedProperties.TryGetValue(pi, out property))
+                    {
+                        property = DefineProperty(pi);
+                        definedProperties.Add(pi, property);
+                    }
 
-                if (pi.CanWrite)
+                    // Define the method and attach it to the property
+                    var method = DefineMethod(mi);
+                    sc.GenerateMethod(pi, mi, method.GetILGenerator());
+                    if (pi.GetGetMethod() == mi)
+                        property.SetGetMethod(method);
+                    else
+                        property.SetSetMethod(method);
+                }
+                else
                 {
-                    var miSet = pi.GetSetMethod();
-                    var newSetMethod = DefineMethod(miSet);
-                    sc.GenerateMethod(pi, miSet, newSetMethod.GetILGenerator());
-                    completed.Add(miSet);
-                    property.SetSetMethod(newSetMethod);
-                }
-            }
-
-            foreach (var mi in type.GetMethods().Where(mi => !completed.Contains(mi)))
-            {
-                var method = DefineMethod(mi);
-                sc.GenerateMethod(null, mi, method.GetILGenerator());
+                    var method = DefineMethod(mi);
+                    sc.GenerateMethod(null, mi, method.GetILGenerator());
+                }                
             }
         }
 

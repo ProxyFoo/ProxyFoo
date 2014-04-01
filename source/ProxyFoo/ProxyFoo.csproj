@@ -73,6 +73,7 @@
     <Compile Include="Core\MixinCoders\IComputeMethodExistsCoder.cs" />
     <Compile Include="Core\MixinCoders\IDynamicPropertySourceMixinCoder.cs" />
     <Compile Include="Core\SubjectTypes\IComputeMethodExistsResult.cs" />
+    <Compile Include="Core\SubjectMethod.cs" />
     <Compile Include="Core\IProxyCoderContext.cs" />
     <Compile Include="Core\MixinCoders\IRealSubjectMixinCoder.cs" />
     <Compile Include="Core\SubjectTypes\ISafeProxyMeta.cs" />
