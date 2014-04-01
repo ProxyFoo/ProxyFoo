@@ -19,34 +19,21 @@
 using System;
 using System.Reflection;
 using ProxyFoo.Core;
-using ProxyFoo.Core.MixinCoders;
-using ProxyFoo.Mixins;
 
 namespace ProxyFoo.MixinCoders
 {
-    public class ComputeMethodExistsMixinCoder : MixinCoderBase, IComputeMethodExistsCoder
+    public class ComputeMethodIndexMixinCoder : MixinCoderBase
     {
-        readonly Type _realSubjectType;
-        FieldInfo _methodExistsField;
+        FieldInfo _methodIndexField;
 
-        public ComputeMethodExistsMixinCoder(ComputeMethodExistsMixin mixin)
+        public FieldInfo MethodIndexField
         {
-            _realSubjectType = mixin.RealSubjectType;
-        }
-
-        public Type RealSubjectType
-        {
-            get { return _realSubjectType; }
-        }
-
-        public FieldInfo MethodExistsField
-        {
-            get { return _methodExistsField; }
+            get { return _methodIndexField; }
         }
 
         public override void Generate(IProxyCodeBuilder pcb)
         {
-            _methodExistsField = pcb.AddField("_methodExists", typeof(bool));
+            _methodIndexField = pcb.AddField("_methodIndex", typeof(int));
             base.Generate(pcb);
         }
     }

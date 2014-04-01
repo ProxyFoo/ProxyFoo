@@ -26,6 +26,8 @@ namespace ProxyFoo.Core
 
         protected SubjectBase(Type type)
         {
+            if (type==null)
+                throw new ArgumentNullException("type");
             _type = type;
         }
 

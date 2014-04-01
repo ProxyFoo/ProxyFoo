@@ -64,8 +64,10 @@
     <Compile Include="Core\Bindings\StandardMethodBindingTests.cs" />
     <Compile Include="Core\ILGenerator+ExtensionsTests.cs" />
     <Compile Include="EqualityTestsBase.cs" />
+    <Compile Include="Functional\ComputeMethodIndexMixinTests.cs" />
     <Compile Include="Functional\DirectProxyTests.cs" />
     <Compile Include="Functional\ProxyClassCoderTests.cs" />
+    <Compile Include="Mixins\ComputeMethodIndexMixinTests.cs" />
     <Compile Include="Mixins\DynamicPropertySourceMixinTests.cs" />
     <Compile Include="Functional\DictionaryProxyTests.cs" />
     <Compile Include="Functional\DuckProxyTests.cs" />
@@ -73,7 +75,6 @@
     <Compile Include="Core\Bindings\NotBindableMethodBindingTests.cs" />
     <Compile Include="Core\Bindings\NotBindableValueBindingTests.cs" />
     <Compile Include="Mixins\MethodExistsProxyMetaMixinTests.cs" />
-    <Compile Include="Mixins\ComputeMethodExistsMixinTests.cs" />
     <Compile Include="Mixins\EmptyMixinTests.cs" />
     <Compile Include="Mixins\SafeNullProxyMixinTests.cs" />
     <Compile Include="Mixins\RealSubjectMixinTests.cs" />
@@ -94,8 +95,6 @@
     <Compile Include="Subjects\DirectProxySubjectTests.cs" />
     <Compile Include="Subjects\MethodExistsMetaSubjectTests.cs" />
     <Compile Include="Subjects\DuckProxySubjectTests.cs" />
-    <Compile Include="Subjects\ComputeMethodExistsForDuckSubjectTests.cs" />
-    <Compile Include="Subjects\ComputeMethodExistsResultSubjectTests.cs" />
     <Compile Include="Subjects\DynamicPropertySourceSubjectTests.cs" />
     <Compile Include="Subjects\SafeNullProxySubjectTests.cs" />
     <Compile Include="Subjects\ProperyStoreSubjectTests.cs" />

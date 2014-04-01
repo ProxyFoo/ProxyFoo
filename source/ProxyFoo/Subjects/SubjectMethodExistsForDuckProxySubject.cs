@@ -1,6 +1,6 @@
 ﻿#region Apache License Notice
 
-// Copyright © 2013, Silverlake Software LLC
+// Copyright © 2014, Silverlake Software LLC
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,27 +18,24 @@
 
 using System;
 using ProxyFoo.Core;
-using ProxyFoo.MixinCoders;
+using ProxyFoo.Core.SubjectTypes;
+using ProxyFoo.SubjectCoders;
 
-namespace ProxyFoo.Mixins
+namespace ProxyFoo.Subjects
 {
-    public class ComputeMethodExistsMixin : MixinBase
+    class SubjectMethodExistsForDuckProxySubject : SubjectBase
     {
+        readonly Type _methodExistsSubjectType;
         readonly Type _realSubjectType;
 
-        public ComputeMethodExistsMixin(Type realSubjectType, params ISubjectDescriptor[] subjects) : base(subjects)
+        public SubjectMethodExistsForDuckProxySubject(Type methodExistsSubjectType, Type realSubjectType)
+            : base(typeof(ISubjectMethodExists<>).MakeGenericType(methodExistsSubjectType))
         {
-            if (realSubjectType==null)
-                throw new ArgumentNullException("realSubjectType");
+            _methodExistsSubjectType = methodExistsSubjectType;
             _realSubjectType = realSubjectType;
         }
 
-        public Type RealSubjectType
-        {
-            get { return _realSubjectType; }
-        }
-
-        protected bool Equals(ComputeMethodExistsMixin other)
+        protected bool Equals(SubjectMethodExistsForDuckProxySubject other)
         {
             return base.Equals(other) && _realSubjectType==other._realSubjectType;
         }
@@ -49,7 +46,9 @@ namespace ProxyFoo.Mixins
                 return false;
             if (ReferenceEquals(this, obj))
                 return true;
-            return obj.GetType()==GetType() && Equals((ComputeMethodExistsMixin)obj);
+            if (obj.GetType()!=GetType())
+                return false;
+            return Equals((SubjectMethodExistsForDuckProxySubject)obj);
         }
 
         public override int GetHashCode()
@@ -60,9 +59,9 @@ namespace ProxyFoo.Mixins
             }
         }
 
-        public override IMixinCoder CreateCoder()
+        public override ISubjectCoder CreateCoder(IMixinCoder mc, IProxyCodeBuilder pcb)
         {
-            return new ComputeMethodExistsMixinCoder(this);
+            return new SubjectMethodExistsForDuckProxySubjectCoder(_methodExistsSubjectType, _realSubjectType);
         }
     }
 }

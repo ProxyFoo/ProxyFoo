@@ -149,6 +149,22 @@ namespace ProxyFoo.Tests.Functional
             Assert.That(duck.MethodExists<IDuckSample>(a => a.Action()), Is.True);
         }
 
+        public interface IDuckSampleTwoMethods
+        {
+            void Action();
+
+            [DuckOptional]
+            void AnotherAction();
+        }
+
+        [Test]
+        public void MethodExistsOnSubjectWithTwoMethods()
+        {
+            var duck = Duck.Cast<IDuckSampleTwoMethods>(new DuckSample());
+            Assert.That(duck.MethodExists<IDuckSampleTwoMethods>(a => a.Action()), Is.True);
+            Assert.That(duck.MethodExists<IDuckSampleTwoMethods>(a => a.AnotherAction()), Is.False);
+        }
+
         public interface ISample
         {
             [DuckOptional]

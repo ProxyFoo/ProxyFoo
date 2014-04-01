@@ -72,8 +72,8 @@
     <Compile Include="Core\IProxyModuleCoderAccess.cs" />
     <Compile Include="Core\MixinCoders\IComputeMethodExistsCoder.cs" />
     <Compile Include="Core\MixinCoders\IDynamicPropertySourceMixinCoder.cs" />
-    <Compile Include="Core\SubjectTypes\IComputeMethodExistsResult.cs" />
     <Compile Include="Core\SubjectMethod.cs" />
+    <Compile Include="Core\SubjectTypes\IComputeMethodIndexResult.cs" />
     <Compile Include="Core\IProxyCoderContext.cs" />
     <Compile Include="Core\MixinCoders\IRealSubjectMixinCoder.cs" />
     <Compile Include="Core\SubjectTypes\ISafeProxyMeta.cs" />
@@ -92,10 +92,12 @@
     <Compile Include="Core\SubjectTypes\IMethodExistsProxyMeta.cs" />
     <Compile Include="Core\SubjectTypes\ISubjectMethodExists.cs" />
     <Compile Include="MethodExists.cs" />
+    <Compile Include="Core\MethodIndexFactory.cs" />
     <Compile Include="MissingMethodException.cs" />
-    <Compile Include="MixinCoders\ComputeMethodExistsMixinCoder.cs" />
+    <Compile Include="MixinCoders\ComputeMethodIndexMixinCoder.cs" />
     <Compile Include="MixinCoders\EmptyMixinCoder.cs" />
     <Compile Include="MixinCoders\StaticFactoryMixinCoder.cs" />
+    <Compile Include="Mixins\ComputeMethodIndexMixin.cs" />
     <Compile Include="Mixins\MethodExistsProxyMetaMixin.cs" />
     <Compile Include="Mixins\EmptyMixin.cs" />
     <Compile Include="Core\Mixins\IRealSubjectMixin.cs" />
@@ -106,26 +108,26 @@
     <Compile Include="ProxyModule+Extensions.cs" />
     <Compile Include="Safe.cs" />
     <Compile Include="SafeFactory.cs" />
+    <Compile Include="SubjectCoders\ComputeMethodIndexForSubjectCoder.cs" />
+    <Compile Include="SubjectCoders\ComputeMethodIndexResultSubjectCoder.cs" />
     <Compile Include="SubjectCoders\SafeProxyMetaSubjectCoder.cs" />
+    <Compile Include="SubjectCoders\SubjectMethodExistsForDuckProxySubjectCoder.cs" />
+    <Compile Include="Subjects\ComputeMethodIndexResultSubject.cs" />
+    <Compile Include="Subjects\ComputeMethodIndexForSubject.cs" />
     <Compile Include="Subjects\SafeDirectProxySubject.cs" />
     <Compile Include="SubjectCoders\SafeDirectProxySubjectCoder.cs" />
     <Compile Include="SubjectCoders\DirectProxySubjectCoder.cs" />
     <Compile Include="SubjectCoders\MethodExistsProxyMetaSubjectCoder.cs" />
     <Compile Include="SubjectCoders\DuckProxySubjectCoder.cs" />
     <Compile Include="MixinCoders\RealSubjectMixinCoder.cs" />
-    <Compile Include="SubjectCoders\ComputeMethodExistsForDuckSubjectCoder.cs" />
-    <Compile Include="SubjectCoders\ComputeMethodExistsResultSubjectCoder.cs" />
     <Compile Include="SubjectCoders\DynamicPropertySourceSubjectCoder.cs" />
     <Compile Include="SubjectCoders\SafeNullProxySubjectCoder.cs" />
     <Compile Include="Subjects\DirectProxySubject.cs" />
     <Compile Include="Subjects\MethodExistsProxyMetaSubject.cs" />
     <Compile Include="Subjects\DuckProxySubject.cs" />
-    <Compile Include="Mixins\ComputeMethodExistsMixin.cs" />
     <Compile Include="Mixins\DynamicPropertySourceMixin.cs" />
     <Compile Include="MixinCoders\DynamicPropertySourceMixinCoder.cs" />
     <Compile Include="Core\IMixinCoderContext.cs" />
-    <Compile Include="Subjects\ComputeMethodExistsForDuckSubject.cs" />
-    <Compile Include="Subjects\ComputeMethodExistsResultSubject.cs" />
     <Compile Include="Subjects\DynamicPropertySourceSubject.cs" />
     <Compile Include="Subjects\SafeNullProxySubject.cs" />
     <Compile Include="MixinCoders\SafeNullProxyMixinCoder.cs" />
@@ -144,6 +146,7 @@
     <Compile Include="Subjects\SafeProxyMetaSubject.cs" />
     <Compile Include="PerSubjectCoders\AlwaysTrueSubjectMethodExistsPerSubjectCoder.cs" />
     <Compile Include="PerSubjectCoders\DuckProxySubjectMethodExistsCoder.cs" />
+    <Compile Include="Subjects\SubjectMethodExistsForDuckProxySubject.cs" />
   </ItemGroup>
   <ItemGroup />
   <PropertyGroup>

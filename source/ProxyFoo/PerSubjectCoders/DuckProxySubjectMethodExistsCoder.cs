@@ -38,32 +38,10 @@ namespace ProxyFoo.PerSubjectCoders
             _realSubjectType = realSubjectType;
         }
 
-        class SubjectMethodExists<T> : ISubjectMethodExists<T> where T : class
-        {
-            readonly T _cmeProxy;
-
-            public SubjectMethodExists(T cmeProxy)
-            {
-                _cmeProxy = cmeProxy;
-            }
-
-            public bool DoesMethodExist(Action<T> exemplar)
-            {
-                exemplar(_cmeProxy);
-                return ((IComputeMethodExistsResult)_cmeProxy).MethodExists;
-            }
-
-            public bool DoesMethodExist<TOut>(Func<T, TOut> exemplar)
-            {
-                exemplar(_cmeProxy);
-                return ((IComputeMethodExistsResult)_cmeProxy).MethodExists;
-            }
-        }
-
         public static ISubjectMethodExists<T> SubjectMethodExistsFactory<T>(ProxyModule proxyModule, Type realSubjectType) where T : class
         {
             var duckFactory = DuckFactory.FromProxyModule(proxyModule);
-            return new SubjectMethodExists<T>(duckFactory.MakeDuckComputeMethodExistsProxyFor<T>(realSubjectType));
+            return duckFactory.MakeSubjectMethodExistsForDuckProxy<T>(realSubjectType);
         }
 
         void ISubjectMethodExistsPerSubjectCoder.PutSubjectMethodExistsOnStack(ILGenerator gen)

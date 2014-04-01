@@ -17,41 +17,32 @@
 #endregion
 
 using System;
-using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using ProxyFoo.Core;
-using ProxyFoo.Core.Bindings;
-using ProxyFoo.Core.MixinCoders;
 
 namespace ProxyFoo.SubjectCoders
 {
-    public class ComputeMethodExistsForDuckSubjectCoder : ISubjectCoder
+    public class ComputeMethodIndexForSubjectCoder : ISubjectCoder
     {
-        readonly IComputeMethodExistsCoder _cmec;
+        readonly FieldInfo _methodIndexField;
+        int _index;
 
-        public ComputeMethodExistsForDuckSubjectCoder(IComputeMethodExistsCoder cmec)
+        public ComputeMethodIndexForSubjectCoder(FieldInfo methodIndexField)
         {
-            _cmec = cmec;
-            if (cmec==null)
-                throw new ArgumentNullException("cmec");
+            if (methodIndexField==null)
+                throw new ArgumentNullException("methodIndexField");
+            _methodIndexField = methodIndexField;
         }
 
         public virtual void GenerateMethod(PropertyInfo pi, MethodInfo mi, ILGenerator gen)
         {
-            var matches = from cmi in _cmec.RealSubjectType.GetMethods()
-                          where cmi.Name==mi.Name
-                          let mbo = DuckMethodBindingOption.Get(mi, cmi)
-                          where mbo.Bindable
-                          orderby mbo.Score descending
-                          select mbo;
-            var bestMatch = matches.FirstOrDefault();
-
             gen.Emit(OpCodes.Ldarg_0); // this
-            gen.Emit(bestMatch!=null ? OpCodes.Ldc_I4_1 : OpCodes.Ldc_I4_0); // true or false
-            gen.Emit(OpCodes.Stfld, _cmec.MethodExistsField); // [s1]._methodExists = [s0];
+            gen.Emit(OpCodes.Ldc_I4, _index); // _index;
+            gen.Emit(OpCodes.Stfld, _methodIndexField); // [s1]._methodIndex = [s0];
             gen.EmitLdDefaultValue(mi.ReturnType);
             gen.Emit(OpCodes.Ret);
+            ++_index;
         }
     }
 }

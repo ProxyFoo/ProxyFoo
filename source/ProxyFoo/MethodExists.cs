@@ -17,6 +17,7 @@
 #endregion
 
 using System;
+using ProxyFoo.Core;
 using ProxyFoo.Core.SubjectTypes;
 
 namespace ProxyFoo
@@ -30,32 +31,30 @@ namespace ProxyFoo
         /// <typeparam name="T">The subject interface the contains the method</typeparam>
         /// <param name="o">The object to test for inclusion of the method</param>
         /// <param name="action">An examplar of the call to the method or property.  Arguments will be evaluated (but not used)
-        /// so be careful to use dummy arguemnts to avoid side effects.</param>
+        /// so be careful to use dummy arguments to avoid side effects.</param>
         /// <returns>true if the method exists, false if it does not</returns>
         public static bool On<T>(object o, Action<T> action) where T : class
         {
             if (o==null)
                 return false;
 
+            ISubjectMethodExists<T> subjectMethodExists = null;
+
             // Check if this is a proxy that supports MethodExists directly
             var meta = o as IMethodExistsProxyMeta;
             if (meta!=null)
-            {
-                var subjectMethodExists = meta.GetSubjectMethodExists<T>();
-                return subjectMethodExists!=null && subjectMethodExists.DoesMethodExist(action);
-            }
+                subjectMethodExists = meta.GetSubjectMethodExists<T>();
 
             // It's a regular object so if it implements T, then it's an easy yes.
             // Note that a proxy that always implements all methods can choose to not implement IMethodExistsProxyMeta or
             // a specific subject could return null to fall through to this case.
-            var subject = o as T;
-            if (subject!=null)
+            if (subjectMethodExists==null && (o as T)!=null)
                 return true;
 
             // It's a regular object that does not implement T, so lets see if a duck cast for T would work.
-            var computeMethodExists = DuckFactory.Default.MakeDuckComputeMethodExistsProxyFor<T>(o);
-            action(computeMethodExists);
-            return ((IComputeMethodExistsResult)computeMethodExists).MethodExists;
+            subjectMethodExists = subjectMethodExists ?? DuckFactory.Default.MakeSubjectMethodExistsForDuckProxy<T>(o);
+            int methodIndex = MethodIndexFactory.Default.GetMethodIndex(action);
+            return subjectMethodExists.DoesMethodExist(methodIndex);
         }
 
         /// <summary>
@@ -67,7 +66,7 @@ namespace ProxyFoo
         /// <typeparam name="TOut">The return type of the method or property</typeparam>
         /// <param name="o">The object to test for inclusion of the method</param>
         /// <param name="func">An examplar of the call to the method or property.  Arguments will be evaluated (but not used)
-        /// so be careful to use dummy arguemnts to avoid side effects.</param>
+        /// so be careful to use dummy arguments to avoid side effects.</param>
         /// <returns>true if the method exists, false if it does not</returns>    
         /// <remarks>This overload does not 'wrap' the func as an action because this would cause an allocation
         /// on every call.  It also avoids using Func&lt;T, object&gt; which also caused allocations.</remarks>
@@ -76,25 +75,23 @@ namespace ProxyFoo
             if (o==null)
                 return false;
 
+            ISubjectMethodExists<T> subjectMethodExists = null;
+
             // Check if this is a proxy that supports MethodExists directly
             var meta = o as IMethodExistsProxyMeta;
             if (meta!=null)
-            {
-                var subjectMethodExists = meta.GetSubjectMethodExists<T>();
-                return subjectMethodExists!=null && subjectMethodExists.DoesMethodExist(func);
-            }
+                subjectMethodExists = meta.GetSubjectMethodExists<T>();
 
             // It's a regular object so if it implements T, then it's an easy yes.
             // Note that a proxy that always implements all methods can choose to not implement IMethodExistsProxyMeta or
             // a specific subject could return null to fall through to this case.
-            var subject = o as T;
-            if (subject!=null)
+            if (subjectMethodExists==null && (o as T)!=null)
                 return true;
 
             // It's a regular object that does not implement T, so lets see if a duck cast for T would work.
-            var computeMethodExists = DuckFactory.Default.MakeDuckComputeMethodExistsProxyFor<T>(o);
-            func(computeMethodExists);
-            return ((IComputeMethodExistsResult)computeMethodExists).MethodExists;
+            subjectMethodExists = subjectMethodExists ?? DuckFactory.Default.MakeSubjectMethodExistsForDuckProxy<T>(o);
+            int methodIndex = MethodIndexFactory.Default.GetMethodIndex(func);
+            return subjectMethodExists.DoesMethodExist(methodIndex);
         }
     }
 }

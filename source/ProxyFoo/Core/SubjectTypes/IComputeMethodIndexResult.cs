@@ -20,8 +20,8 @@ using System;
 
 namespace ProxyFoo.Core.SubjectTypes
 {
-    public interface ISubjectMethodExists<T> where T : class
+    public interface IComputeMethodIndexResult
     {
-        bool DoesMethodExist(int methodIndex);
+        int MethodIndex { get; }
     }
 }

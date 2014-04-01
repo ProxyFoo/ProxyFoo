@@ -1,6 +1,6 @@
 ﻿#region Apache License Notice
 
-// Copyright © 2013, Silverlake Software LLC
+// Copyright © 2014, Silverlake Software LLC
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,27 +18,27 @@
 
 using System;
 using ProxyFoo.Core;
-using ProxyFoo.Core.MixinCoders;
 using ProxyFoo.Core.SubjectTypes;
+using ProxyFoo.MixinCoders;
 using ProxyFoo.Mixins;
 using ProxyFoo.SubjectCoders;
 
 namespace ProxyFoo.Subjects
 {
-    public class ComputeMethodExistsResultSubject : SubjectBase
+    class ComputeMethodIndexResultSubject : SubjectBase
     {
-        public ComputeMethodExistsResultSubject() : base(typeof(IComputeMethodExistsResult)) {}
+        public ComputeMethodIndexResultSubject() : base(typeof(IComputeMethodIndexResult)) {}
 
         public override void Initialize(IMixinDescriptor mixin)
         {
-            if (!(mixin is ComputeMethodExistsMixin))
-                throw new InvalidOperationException("A duck query subject must be part of a duck query proxy mixin.");
+            if (!(mixin is ComputeMethodIndexMixin))
+                throw new InvalidOperationException("A ComputeMethodIndexResultSubject must be part of a ComputeMethodIndexMixin.");
             base.Initialize(mixin);
         }
 
         public override ISubjectCoder CreateCoder(IMixinCoder mc, IProxyCodeBuilder pcb)
         {
-            return new ComputeMethodExistsResultSubjectCoder(mc as IComputeMethodExistsCoder);
+            return new ComputeMethodIndexResultSubjectCoder(((ComputeMethodIndexMixinCoder)mc).MethodIndexField);
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿#region Apache License Notice
 
-// Copyright © 2013, Silverlake Software LLC
+// Copyright © 2014, Silverlake Software LLC
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,30 +18,30 @@
 
 using System;
 using ProxyFoo.Core;
-using ProxyFoo.Core.MixinCoders;
+using ProxyFoo.MixinCoders;
 using ProxyFoo.Mixins;
 using ProxyFoo.SubjectCoders;
 
 namespace ProxyFoo.Subjects
 {
     /// <summary>
-    /// Sets the field represented by <seealso cref="IComputeMethodExistsCoder.MethodExistsField"/> to true when the method is
-    /// called.  This is used in combination with the <see cref="ComputeMethodExistsResultSubject"/> to allow this proxy to determine 
-    /// whether a method exists.
+    /// Sets the field represented by <seealso cref="ComputeMethodIndexMixinCoder.MethodIndexField"/> to the method index when
+    /// the method is called.  This is used in combination with the <see cref="ComputeMethodIndexResultSubject"/> to allow
+    /// this proxy to determine the index of the method from an exemplar.
     /// </summary>
-    public class ComputeMethodExistsForDuckSubject : SubjectBase
+    class ComputeMethodIndexForSubject : SubjectBase
     {
-        public ComputeMethodExistsForDuckSubject(Type type) : base(type) {}
+        public ComputeMethodIndexForSubject(Type type) : base(type) {}
 
         public override void Initialize(IMixinDescriptor mixin)
         {
-            if (!(mixin is ComputeMethodExistsMixin))
-                throw new InvalidOperationException("The ComputeMethodExistsForDuckSubject must be part of a ComputeMethodExistsMixin.");
+            if (!(mixin is ComputeMethodIndexMixin))
+                throw new InvalidOperationException("The ComputeMethodIndexForSubject must be part of a ComputeMethodIndexMixin.");
         }
 
         public override ISubjectCoder CreateCoder(IMixinCoder mc, IProxyCodeBuilder pcb)
         {
-            return new ComputeMethodExistsForDuckSubjectCoder(mc as IComputeMethodExistsCoder);
+            return new ComputeMethodIndexForSubjectCoder(((ComputeMethodIndexMixinCoder)mc).MethodIndexField);
         }
     }
 }

@@ -36,12 +36,7 @@ namespace ProxyFoo.PerSubjectCoders
         {
             public static SubjectMethodExistsAlwaysTrue<T> Instance = new SubjectMethodExistsAlwaysTrue<T>();
 
-            public bool DoesMethodExist(Action<T> exemplar)
-            {
-                return true;
-            }
-
-            public bool DoesMethodExist<TOut>(Func<T, TOut> exemplar)
+            public bool DoesMethodExist(int methodIndex)
             {
                 return true;
             }

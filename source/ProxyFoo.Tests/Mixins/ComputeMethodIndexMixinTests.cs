@@ -20,25 +20,22 @@ using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using ProxyFoo.Mixins;
-using ProxyFoo.Subjects;
 
 namespace ProxyFoo.Tests.Mixins
 {
     [TestFixture]
-    public class ComputeMethodExistsMixinTests : MixinTestsBase<ComputeMethodExistsMixin>
+    public class ComputeMethodIndexMixinTests : MixinTestsBase<ComputeMethodIndexMixin>
     {
         [Test]
-        public void NullRealSubjectThrowsException()
+        public void NullSubjectTypeThrowsException()
         {
-            Assert.Throws<ArgumentNullException>(() => new ComputeMethodExistsMixin(null, null));
+            Assert.Throws<ArgumentNullException>(() => new ComputeMethodIndexMixin(null));
         }
 
-        protected override IEnumerable<ComputeMethodExistsMixin> CreateSamples()
+        protected override IEnumerable<ComputeMethodIndexMixin> CreateSamples()
         {
-            yield return new ComputeMethodExistsMixin(typeof(object), null);
-            yield return new ComputeMethodExistsMixin(typeof(Array), null);
-            yield return new ComputeMethodExistsMixin(typeof(object), new ComputeMethodExistsResultSubject());
-            yield return new ComputeMethodExistsMixin(typeof(Array), new ComputeMethodExistsResultSubject());
+            yield return new ComputeMethodIndexMixin(typeof(object));
+            yield return new ComputeMethodIndexMixin(typeof(Array));
         }
     }
 }

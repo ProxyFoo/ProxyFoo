@@ -56,11 +56,13 @@
     <Compile Include="IfChainSample.cs" />
     <Compile Include="ImplicitNullableConversionSample.cs" />
     <Compile Include="ImplicitNumericSample.cs" />
+    <Compile Include="IndexAccessSample.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Samples.cs" />
     <Compile Include="StaticFactorySample.cs" />
     <Compile Include="StaticFieldAccessSample.cs" />
     <Compile Include="StaticInitSample.cs" />
+    <Compile Include="SwitchJumpTableSample.cs" />
     <Compile Include="UserDefinedConversionSamples.cs" />
   </ItemGroup>
   <PropertyGroup>

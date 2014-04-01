@@ -73,6 +73,7 @@ namespace ProxyFoo
         {
             DuckFactory.Register();
             SafeFactory.Register();
+            MethodIndexFactory.Register();
         }
     }
 }

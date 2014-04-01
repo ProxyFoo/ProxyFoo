@@ -18,10 +18,15 @@
 
 using System;
 
-namespace ProxyFoo.Core.SubjectTypes
+namespace SampleCode
 {
-    public interface ISubjectMethodExists<T> where T : class
+    public class IndexAccessSample
     {
-        bool DoesMethodExist(int methodIndex);
+        static readonly int[] Values = {1, 2, 3};
+
+        public static int GetValue(int index)
+        {
+            return Values[index];
+        }
     }
 }

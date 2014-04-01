@@ -17,11 +17,20 @@
 #endregion
 
 using System;
+using ProxyFoo.Core;
+using ProxyFoo.MixinCoders;
+using ProxyFoo.Subjects;
 
-namespace ProxyFoo.Core.SubjectTypes
+namespace ProxyFoo.Mixins
 {
-    public interface IComputeMethodExistsResult
+    public class ComputeMethodIndexMixin : MixinBase
     {
-        bool MethodExists { get; }
+        public ComputeMethodIndexMixin(Type subjectType)
+            : base(new ComputeMethodIndexForSubject(subjectType), new ComputeMethodIndexResultSubject()) {}
+
+        public override IMixinCoder CreateCoder()
+        {
+            return new ComputeMethodIndexMixinCoder();
+        }
     }
 }

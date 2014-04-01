@@ -20,6 +20,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Linq;
 using ProxyFoo.Core;
+using ProxyFoo.Core.SubjectTypes;
 using ProxyFoo.Mixins;
 using ProxyFoo.Subjects;
 
@@ -126,17 +127,17 @@ namespace ProxyFoo
             return ctor(realSubject);
         }
 
-        public T MakeDuckComputeMethodExistsProxyFor<T>(object realSubject)
+        public ISubjectMethodExists<T> MakeSubjectMethodExistsForDuckProxy<T>(object realSubject) where T : class
         {
-            return MakeDuckComputeMethodExistsProxyFor<T>(realSubject.GetType());
+            return MakeSubjectMethodExistsForDuckProxy<T>(realSubject.GetType());
         }
 
-        public T MakeDuckComputeMethodExistsProxyFor<T>(Type realSubjectType)
+        public ISubjectMethodExists<T> MakeSubjectMethodExistsForDuckProxy<T>(Type realSubjectType) where T : class
         {
-            var pcd = new ProxyClassDescriptor(
-                new ComputeMethodExistsMixin(realSubjectType, new ComputeMethodExistsForDuckSubject(typeof(T)), new ComputeMethodExistsResultSubject()));
-            Type proxyType = _proxyModule.GetTypeFromProxyClassDescriptor(pcd);
-            return (T)Activator.CreateInstance(proxyType);
+            var pcd = new ProxyClassDescriptor(new EmptyMixin(
+                new SubjectMethodExistsForDuckProxySubject(typeof(T), realSubjectType)));
+            var proxyType = _proxyModule.GetTypeFromProxyClassDescriptor(pcd);
+            return (ISubjectMethodExists<T>)Activator.CreateInstance(proxyType);
         }
     }
 }
