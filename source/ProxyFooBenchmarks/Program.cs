@@ -51,6 +51,7 @@ namespace ProxyFooBenchmarks
             BenchmarksGroup2();
             BenchmarksGroup3();
             BenchmarksGroup4();
+            BenchmarksGroup5();
             _inPrime = false;
 
             Console.WriteLine();
