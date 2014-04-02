@@ -49,7 +49,7 @@ namespace ProxyFoo.Core
         }
 
         readonly ProxyModule _proxyModule;
-        readonly ConcurrentDictionary<Type, object> _computeMethodIndexProxyByType = new ConcurrentDictionary<Type, object>();
+        readonly ConcurrentDictionary<Type, Func<object>> _computeMethodIndexGetFuncBySubject = new ConcurrentDictionary<Type, Func<object>>();
 
         public MethodIndexFactory(ProxyModule proxyModule)
         {
@@ -58,15 +58,17 @@ namespace ProxyFoo.Core
 
         object GetMethodIndexProxy(Type subjectType)
         {
-            object proxy;
-            if (!_computeMethodIndexProxyByType.TryGetValue(subjectType, out proxy))
+            Func<object> getFunc;
+            if (!_computeMethodIndexGetFuncBySubject.TryGetValue(subjectType, out getFunc))
             {
-                var pcd = new ProxyClassDescriptor(new ComputeMethodIndexMixin(subjectType));
-                var type = _proxyModule.GetTypeFromProxyClassDescriptor(pcd);
-                proxy = Activator.CreateInstance(type);
-                proxy = _computeMethodIndexProxyByType.GetOrAdd(subjectType, proxy);
+                var pcd = new ProxyClassDescriptor(
+                    new StaticInstanceMixin(StaticInstanceOptions.ThreadStatic),
+                    new ComputeMethodIndexMixin(subjectType));
+                var proxyType = _proxyModule.GetTypeFromProxyClassDescriptor(pcd);
+                getFunc = StaticInstanceMixin.GetInstanceValueFuncFor(proxyType);
+                getFunc = _computeMethodIndexGetFuncBySubject.GetOrAdd(subjectType, getFunc);
             }
-            return proxy;
+            return getFunc();
         }
 
         public int GetMethodIndex<T>(Action<T> exemplar)

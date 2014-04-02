@@ -21,6 +21,7 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using ProxyFoo.Core;
+using ProxyFoo.Core.Foo;
 using ProxyFoo.Mixins;
 
 namespace ProxyFoo.MixinCoders
@@ -43,9 +44,18 @@ namespace ProxyFoo.MixinCoders
 
             var ftb = pcb.SelfTypeBuilder;
 
+            var funcField = ftb.DefineField(
+                StaticInstanceMixin.FuncInstanceFieldName,
+                typeof(Func<object>),
+                FieldAttributes.Static | FieldAttributes.Public);
+
             var field = ftb.DefineField(StaticInstanceMixin.InstanceFieldName, ftb.AsType(), FieldAttributes.Static | FieldAttributes.Private);
             if (_options.HasFlag(StaticInstanceOptions.ThreadStatic))
+            {
+                // ReSharper disable once AssignNullToNotNullAttribute  
                 field.SetCustomAttribute(new CustomAttributeBuilder(typeof(ThreadStaticAttribute).GetConstructor(Type.EmptyTypes), new object[] {}));
+            }
+
             var property = ftb.DefineProperty(StaticInstanceMixin.InstancePropertyName, PropertyAttributes.None, ftb.AsType(), Type.EmptyTypes);
             var getMethod = ftb.DefineMethod(
                 StaticInstanceMixin.InstanceGetMethodName,
@@ -54,6 +64,7 @@ namespace ProxyFoo.MixinCoders
                 Type.EmptyTypes);
             property.SetGetMethod(getMethod);
 
+            // Generate get method body for property
             var gen = getMethod.GetILGenerator();
             var doneLabel = gen.DefineLabel();
             gen.Emit(OpCodes.Ldsfld, field); // push _i;
@@ -64,6 +75,18 @@ namespace ProxyFoo.MixinCoders
             gen.Emit(OpCodes.Dup); // push s0
             gen.Emit(OpCodes.Stsfld, field); // _i = [s0]
             gen.MarkLabel(doneLabel);
+            gen.Emit(OpCodes.Ret);
+
+            GenerateStaticCtor(ftb, funcField, getMethod);
+        }
+
+        public void GenerateStaticCtor(IFooTypeBuilder ftb, FieldInfo funcField, MethodInfo getMethod)
+        {
+            var gen = ftb.DefineConstructor(MethodAttributes.Static, CallingConventions.Standard, null).GetILGenerator();
+            gen.Emit(OpCodes.Ldnull);
+            gen.Emit(OpCodes.Ldftn, getMethod);
+            gen.Emit(OpCodes.Newobj, typeof(Func<object>).GetConstructors().First());
+            gen.Emit(OpCodes.Stsfld, funcField);
             gen.Emit(OpCodes.Ret);
         }
     }

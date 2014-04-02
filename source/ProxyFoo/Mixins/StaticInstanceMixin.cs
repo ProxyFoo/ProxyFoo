@@ -33,6 +33,7 @@ namespace ProxyFoo.Mixins
         internal const string InstanceFieldName = "_i";
         internal const string InstancePropertyName = "I";
         internal const string InstanceGetMethodName = "get_I";
+        internal const string FuncInstanceFieldName = "_func";
 
         readonly StaticInstanceOptions _options;
 
@@ -61,17 +62,11 @@ namespace ProxyFoo.Mixins
             return property.GetValue(null, null);
         }
 
-        /*
-        public static FieldInfo GetInstanceFieldFrom(IFooType proxyType)
+        public static Func<object> GetInstanceValueFuncFor(Type proxyType)
         {
-            return proxyType.GetField(InstanceFieldName);
+            var field = proxyType.GetField(FuncInstanceFieldName);
+            return (Func<object>)field.GetValue(null);
         }
-
-        public static FieldInfo GetInstanceFieldFrom(Type proxyType)
-        {
-            return proxyType.GetField(InstanceFieldName);
-        }
-        */
 
         protected bool Equals(StaticInstanceMixin other)
         {
