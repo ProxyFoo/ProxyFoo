@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
+using ProxyFoo.Core.Foo;
 
 namespace ProxyFoo.Core
 {
@@ -29,6 +30,7 @@ namespace ProxyFoo.Core
         ConstructorInfo Ctor { get; }
         IEnumerable<Type> CtorArgs { get; }
         Type SelfType { get; }
+        IFooTypeBuilder SelfTypeBuilder { get; }
         ILGenerator DefineStaticCtor();
         FieldInfo AddField(string name, Type type);
         FieldInfo AddStaticField(string name, Type type);

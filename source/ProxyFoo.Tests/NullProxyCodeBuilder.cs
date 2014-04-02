@@ -22,6 +22,7 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using ProxyFoo.Core;
+using ProxyFoo.Core.Foo;
 
 namespace ProxyFoo.Tests
 {
@@ -33,12 +34,14 @@ namespace ProxyFoo.Tests
             Ctor = null;
             CtorArgs = Enumerable.Empty<Type>();
             SelfType = null;
+            SelfTypeBuilder = null;
         }
 
         public IProxyCoderContext ProxyCoderContext { get; private set; }
         public ConstructorInfo Ctor { get; private set; }
         public IEnumerable<Type> CtorArgs { get; private set; }
         public Type SelfType { get; private set; }
+        public IFooTypeBuilder SelfTypeBuilder { get; private set; }
 
         public ILGenerator DefineStaticCtor()
         {

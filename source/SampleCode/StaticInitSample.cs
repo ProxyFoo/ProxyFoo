@@ -24,9 +24,16 @@ namespace SampleCode
     {
         public static object Instance;
 
+        [ThreadStatic] public static object Instance2;
+
         static StaticInitSample()
         {
             Instance = new object();
+        }
+
+        public static object Instance2Prop
+        {
+            get { return Instance2 ?? (Instance2 = new object()); }
         }
     }
 }

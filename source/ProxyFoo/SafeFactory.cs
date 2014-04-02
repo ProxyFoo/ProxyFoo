@@ -72,9 +72,9 @@ namespace ProxyFoo
 
         object CreateNullProxyForType(Type type)
         {
-            var pcd = SafeNullMixin.CreateDefaultDescriptorFor(type);
+            var pcd = CreateSafeNullProxyDescriptorFor(type);
             Type proxyType = _proxyModule.GetTypeFromProxyClassDescriptor(pcd);
-            return SafeNullMixin.GetInstanceFieldFrom(new FooTypeFromType(proxyType)).GetValue(null);
+            return StaticInstanceMixin.GetInstanceValueFor(proxyType);
         }
 
         public object GetSafeProxyForType(Type type, object target)
@@ -90,6 +90,15 @@ namespace ProxyFoo
                 ctor = _safeCtorCache.GetOrAdd(type, StaticFactoryMixin.GetCtor<Func<object, object>>(proxyType));
             }
             return ctor(target);
+        }
+
+        public static ProxyClassDescriptor CreateSafeNullProxyDescriptorFor(Type type)
+        {
+            var pcd = new ProxyClassDescriptor(
+                new StaticInstanceMixin(),
+                new EmptyMixin(new SafeNullProxySubject(type), new SafeProxyMetaSubject()),
+                new MethodExistsProxyMetaMixin());
+            return pcd;
         }
     }
 }

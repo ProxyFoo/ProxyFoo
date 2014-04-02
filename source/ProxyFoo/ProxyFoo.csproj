@@ -97,13 +97,15 @@
     <Compile Include="MixinCoders\ComputeMethodIndexMixinCoder.cs" />
     <Compile Include="MixinCoders\EmptyMixinCoder.cs" />
     <Compile Include="MixinCoders\StaticFactoryMixinCoder.cs" />
+    <Compile Include="MixinCoders\StaticInstanceMixinCoder.cs" />
     <Compile Include="Mixins\ComputeMethodIndexMixin.cs" />
     <Compile Include="Mixins\MethodExistsProxyMetaMixin.cs" />
     <Compile Include="Mixins\EmptyMixin.cs" />
     <Compile Include="Core\Mixins\IRealSubjectMixin.cs" />
-    <Compile Include="Mixins\SafeNullMixin.cs" />
     <Compile Include="Mixins\StaticFactoryMixin.cs" />
     <Compile Include="Core\Policies\OnDemandProxyModule.cs" />
+    <Compile Include="Mixins\StaticInstanceMixin.cs" />
+    <Compile Include="Mixins\StaticInstanceOptions.cs" />
     <Compile Include="ProxyFooPolicies.cs" />
     <Compile Include="ProxyModule+Extensions.cs" />
     <Compile Include="Safe.cs" />
@@ -130,7 +132,6 @@
     <Compile Include="Core\IMixinCoderContext.cs" />
     <Compile Include="Subjects\DynamicPropertySourceSubject.cs" />
     <Compile Include="Subjects\SafeNullProxySubject.cs" />
-    <Compile Include="MixinCoders\SafeNullProxyMixinCoder.cs" />
     <Compile Include="DynamicPropertySources\StringDictionaryDynamicPropertySource.cs" />
     <Compile Include="DynamicPropertySources\StringSourceAdapter.cs" />
     <Compile Include="SubjectCoders\PropertyStoreSubjectCoder.cs" />

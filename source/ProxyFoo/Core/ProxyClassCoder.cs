@@ -129,7 +129,7 @@ namespace ProxyFoo.Core
             {
                 var pi = subjectMethod.PropertyInfo;
                 var mi = subjectMethod.MethodInfo;
-                if (pi != null)
+                if (pi!=null)
                 {
                     // If this is the first method in the property, define the property
                     PropertyBuilder property;
@@ -142,7 +142,7 @@ namespace ProxyFoo.Core
                     // Define the method and attach it to the property
                     var method = DefineMethod(mi);
                     sc.GenerateMethod(pi, mi, method.GetILGenerator());
-                    if (pi.GetGetMethod() == mi)
+                    if (pi.GetGetMethod()==mi)
                         property.SetGetMethod(method);
                     else
                         property.SetSetMethod(method);
@@ -151,7 +151,7 @@ namespace ProxyFoo.Core
                 {
                     var method = DefineMethod(mi);
                     sc.GenerateMethod(null, mi, method.GetILGenerator());
-                }                
+                }
             }
         }
 
@@ -339,6 +339,11 @@ namespace ProxyFoo.Core
                 get { return _proxyCoder._tb; }
             }
 
+            public IFooTypeBuilder SelfTypeBuilder
+            {
+                get { return _proxyCoder._ftb; }
+            }
+
             public ILGenerator DefineStaticCtor()
             {
                 return _proxyCoder._tb.DefineConstructor(MethodAttributes.Static, CallingConventions.Standard, null).GetILGenerator();
@@ -347,7 +352,7 @@ namespace ProxyFoo.Core
             public FieldInfo AddStaticField(string name, Type type)
             {
                 if (_index > 0)
-                    throw new Exception("Static fields are not supported on multiple mixin proxies.");
+                    throw new Exception("Static fields are only supported on the first mixin.");
                 var field = _proxyCoder._ftb.DefineField(name, type, FieldAttributes.Static | FieldAttributes.Public);
                 _proxyCoder._fields.Add(field);
                 return field;

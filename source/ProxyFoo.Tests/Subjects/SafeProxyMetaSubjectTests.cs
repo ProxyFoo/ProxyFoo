@@ -41,11 +41,5 @@ namespace ProxyFoo.Tests.Subjects
             var mixinCoder = mixin.CreateCoder();
             Assert.That(subject.CreateCoder(mixinCoder, new NullProxyCodeBuilder()), Is.Not.Null);
         }
-
-        [Test]
-        public void ThrowsExceptionWhenUsedWithWrongMixin()
-        {
-            Assert.Throws<InvalidOperationException>(() => new ProxyClassDescriptor(new EmptyMixin(new SafeProxyMetaSubject())));
-        }
     }
 }

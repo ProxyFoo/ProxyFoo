@@ -73,10 +73,9 @@ namespace ProxyFoo.SubjectCoders
         {
             if ((returnType.IsClass || returnType.IsInterface) && !returnType.IsSealed)
             {
-                var pcd = SafeNullMixin.CreateDefaultDescriptorFor(returnType);
+                var pcd = SafeFactory.CreateSafeNullProxyDescriptorFor(returnType);
                 var proxyType = _proxyModule.GetTypeFromProxyClassDescriptor(pcd);
-                var instanceField = SafeNullMixin.GetInstanceFieldFrom(proxyType);
-                gen.Emit(OpCodes.Ldsfld, instanceField);
+                StaticInstanceMixin.PushInstanceOnStackFor(proxyType,gen);
             }
             else
                 gen.EmitLdDefaultValue(returnType);

@@ -17,21 +17,13 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using NUnit.Framework;
-using ProxyFoo.Mixins;
-using ProxyFoo.Subjects;
 
-namespace ProxyFoo.Tests.Mixins
+namespace ProxyFoo.Mixins
 {
-    [TestFixture]
-    public class SafeNullProxyMixinTests : MixinTestsBase<SafeNullMixin>
+    [Flags]
+    public enum StaticInstanceOptions
     {
-        protected override IEnumerable<SafeNullMixin> CreateSamples()
-        {
-            yield return new SafeNullMixin(null);
-            yield return new SafeNullMixin(new SafeNullProxySubject(typeof(ICloneable)));
-            yield return new SafeNullMixin(new SafeNullProxySubject(typeof(IComparable)));
-        }
+        Default = 0,
+        ThreadStatic = 1
     }
 }

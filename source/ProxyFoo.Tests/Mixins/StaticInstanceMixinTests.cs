@@ -1,6 +1,6 @@
-#region Apache License Notice
+﻿#region Apache License Notice
 
-// Copyright � 2014, Silverlake Software LLC
+// Copyright © 2014, Silverlake Software LLC
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,22 +17,19 @@
 #endregion
 
 using System;
-using System.Reflection.Emit;
-using ProxyFoo.Core;
+using System.Collections.Generic;
+using NUnit.Framework;
 using ProxyFoo.Mixins;
 
-namespace ProxyFoo.MixinCoders
+namespace ProxyFoo.Tests.Mixins
 {
-    class SafeNullMixinCoder : MixinCoderBase
+    [TestFixture]
+    public class StaticInstanceMixinTests : MixinTestsBase<StaticInstanceMixin>
     {
-        public override void Generate(IProxyCodeBuilder pcb)
+        protected override IEnumerable<StaticInstanceMixin> CreateSamples()
         {
-            var instanceField = pcb.AddStaticField(SafeNullMixin.InstanceFieldName, pcb.SelfType);
-            var gen = pcb.DefineStaticCtor();
-            gen.Emit(OpCodes.Newobj, pcb.Ctor);
-            gen.Emit(OpCodes.Stsfld, instanceField);
-            gen.Emit(OpCodes.Ret);
-            base.Generate(pcb);
+            yield return new StaticInstanceMixin();
+            yield return new StaticInstanceMixin(StaticInstanceOptions.ThreadStatic);
         }
     }
 }

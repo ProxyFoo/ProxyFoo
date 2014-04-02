@@ -68,10 +68,9 @@ namespace ProxyFoo.SubjectCoders
             // The argument for the constructor is already on the stack (which is the return value
             // from the method call on the real subject).
             gen.Emit(OpCodes.Pop); // We don't need it - it's always null
-            var pcd = SafeNullMixin.CreateDefaultDescriptorFor(returnType);
+            var pcd = SafeFactory.CreateSafeNullProxyDescriptorFor(returnType);
             var proxyType = _proxyModule.GetTypeFromProxyClassDescriptor(pcd);
-            var instanceField = SafeNullMixin.GetInstanceFieldFrom(proxyType);
-            gen.Emit(OpCodes.Ldsfld, instanceField);
+            StaticInstanceMixin.PushInstanceOnStackFor(proxyType, gen);
         }
 
         void EmitCtorForSafeDirectProxy(ILGenerator gen, Type returnType)

@@ -19,7 +19,6 @@
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
-using ProxyFoo.Core;
 using ProxyFoo.Mixins;
 using ProxyFoo.Subjects;
 
@@ -38,16 +37,9 @@ namespace ProxyFoo.Tests.Subjects
         public void CanCreateCoder()
         {
             var subject = new SafeNullProxySubject(typeof(ICloneable));
-            var mixin = new SafeNullMixin(subject);
-            var pcd = new ProxyClassDescriptor(mixin);
+            var mixin = new EmptyMixin(subject);
             var mixinCoder = mixin.CreateCoder();
             Assert.That(subject.CreateCoder(mixinCoder, new NullProxyCodeBuilder()), Is.Not.Null);
-        }
-
-        [Test]
-        public void ThrowsExceptionWhenUsedWithWrongMixin()
-        {
-            Assert.Throws<InvalidOperationException>(() => new ProxyClassDescriptor(new EmptyMixin(new SafeNullProxySubject(typeof(ICloneable)))));
         }
     }
 }

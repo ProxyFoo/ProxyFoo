@@ -19,7 +19,6 @@
 using System;
 using ProxyFoo.Core;
 using ProxyFoo.Core.PerSubjectCoders;
-using ProxyFoo.Mixins;
 using ProxyFoo.PerSubjectCoders;
 using ProxyFoo.SubjectCoders;
 
@@ -32,13 +31,6 @@ namespace ProxyFoo.Subjects
     public class SafeNullProxySubject : SubjectBase, IPerSubjectCoderFactory<ISubjectMethodExistsPerSubjectCoder>
     {
         public SafeNullProxySubject(Type type) : base(type) {}
-
-        public override void Initialize(IMixinDescriptor mixin)
-        {
-            if (!(mixin is SafeNullMixin))
-                throw new InvalidOperationException("A safe proxy meta subject must be part of a safe null proxy mixin.");
-            base.Initialize(mixin);
-        }
 
         public override ISubjectCoder CreateCoder(IMixinCoder mc, IProxyCodeBuilder pcb)
         {

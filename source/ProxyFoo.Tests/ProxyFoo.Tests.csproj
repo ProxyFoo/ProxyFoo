@@ -67,6 +67,7 @@
     <Compile Include="Functional\ComputeMethodIndexMixinTests.cs" />
     <Compile Include="Functional\DirectProxyTests.cs" />
     <Compile Include="Functional\ProxyClassCoderTests.cs" />
+    <Compile Include="Functional\StaticInstanceMixinTests.cs" />
     <Compile Include="Mixins\ComputeMethodIndexMixinTests.cs" />
     <Compile Include="Mixins\DynamicPropertySourceMixinTests.cs" />
     <Compile Include="Functional\DictionaryProxyTests.cs" />
@@ -76,9 +77,9 @@
     <Compile Include="Core\Bindings\NotBindableValueBindingTests.cs" />
     <Compile Include="Mixins\MethodExistsProxyMetaMixinTests.cs" />
     <Compile Include="Mixins\EmptyMixinTests.cs" />
-    <Compile Include="Mixins\SafeNullProxyMixinTests.cs" />
     <Compile Include="Mixins\RealSubjectMixinTests.cs" />
     <Compile Include="Mixins\StaticFactoryMixinTests.cs" />
+    <Compile Include="Mixins\StaticInstanceMixinTests.cs" />
     <Compile Include="MixinTestsBase.cs" />
     <Compile Include="NullProxyCodeBuilder.cs" />
     <Compile Include="NullProxyCoderContext.cs" />

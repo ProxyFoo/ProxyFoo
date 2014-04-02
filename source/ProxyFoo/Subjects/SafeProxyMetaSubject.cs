@@ -19,9 +19,7 @@
 using System;
 using ProxyFoo.Core;
 using ProxyFoo.Core.MixinCoders;
-using ProxyFoo.Core.Mixins;
 using ProxyFoo.Core.SubjectTypes;
-using ProxyFoo.Mixins;
 using ProxyFoo.SubjectCoders;
 
 namespace ProxyFoo.Subjects
@@ -29,13 +27,6 @@ namespace ProxyFoo.Subjects
     public class SafeProxyMetaSubject : SubjectBase
     {
         public SafeProxyMetaSubject() : base(typeof(ISafeProxyMeta)) {}
-
-        public override void Initialize(IMixinDescriptor mixin)
-        {
-            if (!(mixin is IRealSubjectMixin) && !(mixin is SafeNullMixin))
-                throw new InvalidOperationException("A safe proxy meta subject must be part of a real subject mixin or safe null proxy mixin.");
-            base.Initialize(mixin);
-        }
 
         public override ISubjectCoder CreateCoder(IMixinCoder mc, IProxyCodeBuilder pcb)
         {
