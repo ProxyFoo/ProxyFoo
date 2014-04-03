@@ -61,7 +61,7 @@ namespace ProxyFoo.Subjects
 
         public override ISubjectCoder CreateCoder(IMixinCoder mc, IProxyCodeBuilder pcb)
         {
-            return new SubjectMethodExistsForDuckProxySubjectCoder(_methodExistsSubjectType, _realSubjectType);
+            return new SubjectMethodExistsForDuckProxySubjectCoder(pcb, _methodExistsSubjectType, _realSubjectType);
         }
     }
 }

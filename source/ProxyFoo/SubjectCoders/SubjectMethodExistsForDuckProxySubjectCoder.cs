@@ -22,6 +22,9 @@ using System.Reflection;
 using System.Reflection.Emit;
 using ProxyFoo.Core;
 using ProxyFoo.Core.Bindings;
+using ProxyFoo.Core.Foo;
+using ProxyFoo.Core.SubjectTypes;
+using ProxyFoo.Mixins;
 
 namespace ProxyFoo.SubjectCoders
 {
@@ -29,24 +32,36 @@ namespace ProxyFoo.SubjectCoders
     {
         readonly Type _methodExistsSubjectType;
         readonly Type _realSubjectType;
+        readonly IFooType _methodIndexProxyType;
+        readonly IFooTypeBuilder _ftb;
+        readonly MethodInfo _smiMethod;
 
-        public SubjectMethodExistsForDuckProxySubjectCoder(Type methodExistsSubjectType, Type realSubjectType)
+        public SubjectMethodExistsForDuckProxySubjectCoder(IProxyCodeBuilder pcb, Type methodExistsSubjectType, Type realSubjectType)
         {
             _methodExistsSubjectType = methodExistsSubjectType;
             _realSubjectType = realSubjectType;
+            var pcd = MethodIndexFactory.GetProxyClassDescriptorForSubjectType(methodExistsSubjectType);
+            _methodIndexProxyType = pcb.ProxyCoderContext.ProxyModule.GetTypeFromProxyClassDescriptor(pcd);
+            _ftb = pcb.SelfTypeBuilder;
+            _smiMethod = GenerateStaticFromMethodIndex();
         }
 
-        public void GenerateMethod(PropertyInfo pi, MethodInfo mi, ILGenerator gen)
+        MethodInfo GenerateStaticFromMethodIndex()
         {
+            var method = _ftb.DefineMethod(
+                "_GetSmeResult",
+                MethodAttributes.Static | MethodAttributes.Private,
+                typeof(bool),
+                new[] {typeof(int)});
+            var gen = method.GetILGenerator();
             var methods = SubjectMethod.GetAllForType(_methodExistsSubjectType).ToArray();
-
             if (methods.Length==1)
             {
                 PutMethodExistsOnStack(methods[0].MethodInfo, gen);
             }
             else
             {
-                gen.EmitBestLdArg(1);
+                gen.Emit(OpCodes.Ldarg_0);
                 var labels = methods.Select(_ => gen.DefineLabel()).ToArray();
                 var exitLabel = gen.DefineLabel();
                 gen.Emit(OpCodes.Switch, labels);
@@ -60,6 +75,69 @@ namespace ProxyFoo.SubjectCoders
                 }
                 gen.MarkLabel(exitLabel);
             }
+            gen.Emit(OpCodes.Ret);
+            return method;
+        }
+
+        public void GenerateMethod(PropertyInfo pi, MethodInfo mi, ILGenerator gen)
+        {
+            var parameters = mi.GetParameters();
+            if (parameters.Length!=1)
+                ThrowUnrecognizedMethod();
+
+            Type parameterType = parameters[0].ParameterType;
+            if (parameterType==typeof(int))
+                GenerateFromMethodIndex(gen);
+            else if (parameterType.GetGenericTypeDefinition()==typeof(Action<>))
+                GenerateFromAction(gen);
+            else if (parameterType.GetGenericTypeDefinition()==typeof(Func<,>))
+                GenerateFromFunc(gen, mi.GetGenericArguments()[0]);
+            else
+                ThrowUnrecognizedMethod();
+        }
+
+        static void ThrowUnrecognizedMethod()
+        {
+            throw new Exception("Unrecognized method on ISubjectMethodExists");
+        }
+
+        void GenerateFromMethodIndex(ILGenerator gen)
+        {
+            gen.Emit(OpCodes.Ldarg_1);
+            gen.Emit(OpCodes.Call, _smiMethod);
+            gen.Emit(OpCodes.Ret);
+        }
+
+        void GenerateFromAction(ILGenerator gen)
+        {
+            var cmi = gen.DeclareLocal(_methodIndexProxyType.AsType());
+            StaticInstanceMixin.PushInstanceOnStackFor(_methodIndexProxyType, gen);
+            gen.Emit(OpCodes.Stloc, cmi);
+
+            //int DoesMethodExist(Action<T> exemplar);
+            gen.Emit(OpCodes.Ldarg_1); // push exemplar
+            gen.Emit(OpCodes.Ldloc, cmi); // push the ISubjectType
+            gen.Emit(OpCodes.Callvirt, typeof(Action<>).MakeGenericType(_methodExistsSubjectType).GetMethod("Invoke"));
+            gen.Emit(OpCodes.Ldloc, cmi); // push the IComputeMethodExistsResult
+            gen.Emit(OpCodes.Callvirt, typeof(IComputeMethodIndexResult).GetProperty("MethodIndex").GetGetMethod());
+            gen.Emit(OpCodes.Call, _smiMethod);
+            gen.Emit(OpCodes.Ret);
+        }
+
+        void GenerateFromFunc(ILGenerator gen, Type tOut)
+        {
+            var cmi = gen.DeclareLocal(_methodIndexProxyType.AsType());
+            StaticInstanceMixin.PushInstanceOnStackFor(_methodIndexProxyType, gen);
+            gen.Emit(OpCodes.Stloc, cmi);
+
+            //int DoesMethodExist(Func<T,TOut> exemplar);
+            gen.Emit(OpCodes.Ldarg_1); // push exemplar
+            gen.Emit(OpCodes.Ldloc, cmi); // push the ISubjectType
+            gen.Emit(OpCodes.Callvirt, typeof(Func<,>).MakeGenericType(_methodExistsSubjectType, tOut).GetMethod("Invoke"));
+            gen.Emit(OpCodes.Pop); // pop the return value
+            gen.Emit(OpCodes.Ldloc, cmi); // push the IComputeMethodExistsResult
+            gen.Emit(OpCodes.Callvirt, typeof(IComputeMethodIndexResult).GetProperty("MethodIndex").GetGetMethod());
+            gen.Emit(OpCodes.Call, _smiMethod);
             gen.Emit(OpCodes.Ret);
         }
 

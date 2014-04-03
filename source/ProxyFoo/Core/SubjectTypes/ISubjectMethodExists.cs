@@ -23,5 +23,7 @@ namespace ProxyFoo.Core.SubjectTypes
     public interface ISubjectMethodExists<T> where T : class
     {
         bool DoesMethodExist(int methodIndex);
+        bool DoesMethodExist(Action<T> exemplar);
+        bool DoesMethodExist<TOut>(Func<T, TOut> exemplar);
     }
 }

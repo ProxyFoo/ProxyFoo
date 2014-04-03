@@ -61,14 +61,20 @@ namespace ProxyFoo.Core
             Func<object> getFunc;
             if (!_computeMethodIndexGetFuncBySubject.TryGetValue(subjectType, out getFunc))
             {
-                var pcd = new ProxyClassDescriptor(
-                    new StaticInstanceMixin(StaticInstanceOptions.ThreadStatic),
-                    new ComputeMethodIndexMixin(subjectType));
+                var pcd = GetProxyClassDescriptorForSubjectType(subjectType);
                 var proxyType = _proxyModule.GetTypeFromProxyClassDescriptor(pcd);
                 getFunc = StaticInstanceMixin.GetInstanceValueFuncFor(proxyType);
                 getFunc = _computeMethodIndexGetFuncBySubject.GetOrAdd(subjectType, getFunc);
             }
             return getFunc();
+        }
+
+        public static ProxyClassDescriptor GetProxyClassDescriptorForSubjectType(Type subjectType)
+        {
+            var pcd = new ProxyClassDescriptor(
+                new StaticInstanceMixin(StaticInstanceOptions.ThreadStatic),
+                new ComputeMethodIndexMixin(subjectType));
+            return pcd;
         }
 
         public int GetMethodIndex<T>(Action<T> exemplar)

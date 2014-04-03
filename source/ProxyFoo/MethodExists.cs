@@ -17,7 +17,6 @@
 #endregion
 
 using System;
-using ProxyFoo.Core;
 using ProxyFoo.Core.SubjectTypes;
 
 namespace ProxyFoo
@@ -53,8 +52,7 @@ namespace ProxyFoo
 
             // It's a regular object that does not implement T, so lets see if a duck cast for T would work.
             subjectMethodExists = subjectMethodExists ?? DuckFactory.Default.MakeSubjectMethodExistsForDuckProxy<T>(o);
-            int methodIndex = MethodIndexFactory.Default.GetMethodIndex(action);
-            return subjectMethodExists.DoesMethodExist(methodIndex);
+            return subjectMethodExists.DoesMethodExist(action);
         }
 
         /// <summary>
@@ -90,8 +88,7 @@ namespace ProxyFoo
 
             // It's a regular object that does not implement T, so lets see if a duck cast for T would work.
             subjectMethodExists = subjectMethodExists ?? DuckFactory.Default.MakeSubjectMethodExistsForDuckProxy<T>(o);
-            int methodIndex = MethodIndexFactory.Default.GetMethodIndex(func);
-            return subjectMethodExists.DoesMethodExist(methodIndex);
+            return subjectMethodExists.DoesMethodExist(func);
         }
     }
 }

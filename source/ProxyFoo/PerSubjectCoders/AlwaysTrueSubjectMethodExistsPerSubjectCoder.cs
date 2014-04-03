@@ -40,6 +40,16 @@ namespace ProxyFoo.PerSubjectCoders
             {
                 return true;
             }
+
+            public bool DoesMethodExist(Action<T> exemplar)
+            {
+                return true;
+            }
+
+            public bool DoesMethodExist<TOut>(Func<T, TOut> exemplar)
+            {
+                return true;
+            }
         }
 
         void ISubjectMethodExistsPerSubjectCoder.PutSubjectMethodExistsOnStack(ILGenerator gen)
