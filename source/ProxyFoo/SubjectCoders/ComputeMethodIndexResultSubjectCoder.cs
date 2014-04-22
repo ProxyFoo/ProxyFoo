@@ -20,24 +20,25 @@ using System;
 using System.Reflection;
 using System.Reflection.Emit;
 using ProxyFoo.Core;
+using ProxyFoo.MixinCoders;
 
 namespace ProxyFoo.SubjectCoders
 {
-    public class ComputeMethodIndexResultSubjectCoder : ISubjectCoder
+    class ComputeMethodIndexResultSubjectCoder : ISubjectCoder
     {
-        readonly FieldInfo _methodIndexField;
+        readonly ComputeMethodIndexMixinCoder _mc;
 
-        public ComputeMethodIndexResultSubjectCoder(FieldInfo methodIndexField)
+        internal ComputeMethodIndexResultSubjectCoder(ComputeMethodIndexMixinCoder mc)
         {
-            if (methodIndexField==null)
-                throw new ArgumentNullException("methodIndexField");
-            _methodIndexField = methodIndexField;
+            _mc = mc;
+            if (mc==null)
+                throw new ArgumentNullException("mc");
         }
 
         public virtual void GenerateMethod(PropertyInfo pi, MethodInfo mi, ILGenerator gen)
         {
             gen.Emit(OpCodes.Ldarg_0); // this
-            gen.Emit(OpCodes.Ldfld, _methodIndexField); // [s0]._methodIndex
+            gen.Emit(OpCodes.Ldfld, _mc.MethodIndexField); // [s0]._methodIndex
             gen.Emit(OpCodes.Ret);
         }
     }

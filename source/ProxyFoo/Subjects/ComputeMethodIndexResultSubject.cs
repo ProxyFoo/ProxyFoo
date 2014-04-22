@@ -27,7 +27,7 @@ namespace ProxyFoo.Subjects
 {
     class ComputeMethodIndexResultSubject : SubjectBase
     {
-        public ComputeMethodIndexResultSubject() : base(typeof(IComputeMethodIndexResult)) {}
+        internal ComputeMethodIndexResultSubject() : base(typeof(IComputeMethodIndexResult)) {}
 
         public override void Initialize(IMixinDescriptor mixin)
         {
@@ -38,7 +38,7 @@ namespace ProxyFoo.Subjects
 
         public override ISubjectCoder CreateCoder(IMixinCoder mc, IProxyCodeBuilder pcb)
         {
-            return new ComputeMethodIndexResultSubjectCoder(((ComputeMethodIndexMixinCoder)mc).MethodIndexField);
+            return new ComputeMethodIndexResultSubjectCoder((ComputeMethodIndexMixinCoder)mc);
         }
     }
 }
