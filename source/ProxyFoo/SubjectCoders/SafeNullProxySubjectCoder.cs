@@ -71,7 +71,7 @@ namespace ProxyFoo.SubjectCoders
 
         public virtual void PushDefaultReturnValue(ILGenerator gen, Type returnType)
         {
-            if ((returnType.IsClass || returnType.IsInterface) && !returnType.IsSealed)
+            if (returnType.IsInterface)
             {
                 var pcd = SafeFactory.CreateSafeNullProxyDescriptorFor(returnType);
                 var proxyType = _proxyModule.GetTypeFromProxyClassDescriptor(pcd);

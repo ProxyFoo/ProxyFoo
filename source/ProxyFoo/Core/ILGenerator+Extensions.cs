@@ -138,6 +138,13 @@ namespace ProxyFoo.Core
                 gen.Emit(OpCodes.Ldc_I4_0);
                 gen.Emit(OpCodes.Newobj, consDecimal);
             }
+            else if (returnType.IsValueType)
+            {
+                var returnTypeLocal = gen.DeclareLocal(returnType);
+                gen.Emit(OpCodes.Ldloca, returnTypeLocal);
+                gen.Emit(OpCodes.Initobj, returnType);
+                gen.Emit(OpCodes.Ldloc, returnTypeLocal);
+            }
             else
             {
                 throw new InvalidOperationException("Unable to handle return type");

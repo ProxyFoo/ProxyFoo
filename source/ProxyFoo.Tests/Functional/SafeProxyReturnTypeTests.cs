@@ -43,7 +43,6 @@ namespace ProxyFoo.Tests.Functional
             long DefaultLong { get; }
             sbyte DefaultSbyte { get; }
             short DefaultShort { get; }
-            string DefaultString { get; }
             uint DefaultUint { get; }
             ulong DefaultUlong { get; }
             ushort DefaultUShort { get; }
@@ -134,13 +133,6 @@ namespace ProxyFoo.Tests.Functional
         }
 
         [Test]
-        public void DefaultForString()
-        {
-            var t = GetTestTarget();
-            Assert.That(t.DefaultString, Is.EqualTo(default(string)));
-        }
-
-        [Test]
         public void DefaultForUlong()
         {
             var t = GetTestTarget();
@@ -166,6 +158,32 @@ namespace ProxyFoo.Tests.Functional
         {
             var t = GetTestTarget();
             Assert.That(t.DefaultLargeSizeEnum, Is.EqualTo(default(LargeSizeEnum)));
+        }
+
+        public interface ISampleValueType
+        {
+            DateTime DateTime { get; }
+        }
+
+        [Test]
+        public void CanReturnDefaultForValueType()
+        {
+            var t = ((object)null).Safe<ISampleValueType>();
+            Assert.That(t.DateTime, Is.EqualTo(default(DateTime)));
+        }
+
+        public class SampleConcreteClass {};
+
+        public interface ISampleConcreteClass
+        {
+            SampleConcreteClass Sample { get; }
+        }
+
+        [Test]
+        public void ConcreteClassStillReturnsNull()
+        {            
+            var t = ((object)null).Safe<ISampleConcreteClass>();
+            Assert.That(t.Sample, Is.Null);
         }
     }
 }
