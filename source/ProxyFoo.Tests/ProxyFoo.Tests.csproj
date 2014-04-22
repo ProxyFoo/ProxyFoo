@@ -67,6 +67,7 @@
     <Compile Include="Functional\ComputeMethodIndexMixinTests.cs" />
     <Compile Include="Functional\DirectProxyTests.cs" />
     <Compile Include="Functional\ProxyClassCoderTests.cs" />
+    <Compile Include="Functional\SafeProxyWithMissingMethodTests.cs" />
     <Compile Include="Functional\StaticInstanceMixinTests.cs" />
     <Compile Include="Mixins\ComputeMethodIndexMixinTests.cs" />
     <Compile Include="Mixins\DynamicPropertySourceMixinTests.cs" />

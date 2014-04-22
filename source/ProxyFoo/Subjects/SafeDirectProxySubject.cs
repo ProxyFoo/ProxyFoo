@@ -39,7 +39,7 @@ namespace ProxyFoo.Subjects
 
         public override ISubjectCoder CreateCoder(IMixinCoder mc, IProxyCodeBuilder pcb)
         {
-            return new SafeDirectProxySubjectCoder(mc as IRealSubjectMixinCoder, pcb.ProxyCoderContext.ProxyModule);
+            return new SafeDirectProxySubjectCoder(mc as IRealSubjectMixinCoder, pcb.ProxyCoderContext.ProxyModule, Type);
         }
 
         public ISubjectMethodExistsPerSubjectCoder CreateCoder(IProxyCodeBuilder pcb)
