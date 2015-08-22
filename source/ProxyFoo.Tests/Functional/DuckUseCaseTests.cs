@@ -19,7 +19,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using NUnit.Framework;
+
+[assembly: InternalsVisibleTo("ZPFD.Functional.DuckUseCaseTests.WorksWithAnonymousTypes")]
 
 namespace ProxyFoo.Tests.Functional
 {
@@ -64,6 +67,20 @@ namespace ProxyFoo.Tests.Functional
             Assert.That(sampleEnumerable, Is.Not.Null);
             Assert.That(sampleEnumerableInt, Is.Not.Null);
             Assert.That(sampleAdd, Is.Not.Null);
+        }
+
+        public interface ITest
+        {
+            double Value { get; }
+        }
+
+        [Test]
+        public void WorksWithAnonymousTypes()
+        {
+            var test = Duck.Cast<ITest>(
+                new {Value = 1d});
+            Assert.That(test, Is.Not.Null);
+            Assert.That(test.Value, Is.EqualTo(1d));
         }
     }
 }
