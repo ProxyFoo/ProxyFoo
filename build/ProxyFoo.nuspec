@@ -3,14 +3,16 @@
 <package>
     <metadata>
         <id>ProxyFoo</id>
-        <version>0.2.2</version>
+        <version>0.3.0</version>
         <authors>Silverlake Software LLC</authors>
         <owners>Jamie da Silva</owners>
         <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0.html</licenseUrl>
         <projectUrl>https://github.com/ProxyFoo/ProxyFoo</projectUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
-        <description>ProxyFoo is a library for the .NET Framework to facilitate creating high-performance proxies for Duck casting, null safe wrappers, and other uses</description>
-        <releaseNotes>v0.2.2:
+        <description>ProxyFoo is a library for the .NET Framework to facilitate creating high-performance proxies for Duck casting, null safe wrappers, method interception, and other uses</description>
+        <releaseNotes>v0.3.0:
+- Add new intercept proxy mixin
+v0.2.2:
 - Safe proxies test for method exists on duck proxies (or any real subject that supports it via IMethodExistsProxyMeta)
 - Safe proxies will be created for any type: any value type can be returned and concrete classes return null (can't proxy them, but you can always duck them to an interface then safe proxy the duck)
 - Fix threading issue for method exists
