@@ -30,19 +30,24 @@ namespace ProxyFoo.Core
     {
         static readonly IMixinDescriptor[] EmptyMixins = new IMixinDescriptor[0];
         readonly IMixinDescriptor[] _mixins;
-        readonly Type _baseClassType = typeof(object);
+        readonly Type _baseClassType;
 
         public ProxyClassDescriptor()
         {
+            _baseClassType = typeof(object);
             _mixins = EmptyMixins;
         }
 
-        public ProxyClassDescriptor(params IMixinDescriptor[] mixins)
+        public ProxyClassDescriptor(Type baseClassType, params IMixinDescriptor[] mixins)
         {
+            _baseClassType = baseClassType;
             _mixins = mixins;
             foreach (var mixin in _mixins)
                 mixin.Initialize(this);
         }
+
+        public ProxyClassDescriptor(params IMixinDescriptor[] mixins)
+            : this(typeof(object), mixins) {}
 
         public bool IsValid()
         {

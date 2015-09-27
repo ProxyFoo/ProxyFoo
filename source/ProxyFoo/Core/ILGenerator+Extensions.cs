@@ -18,6 +18,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Reflection.Emit;
 
 namespace ProxyFoo.Core
@@ -50,6 +51,13 @@ namespace ProxyFoo.Core
         {
             gen.Emit(OpCodes.Ldtoken, type);
             gen.Emit(OpCodes.Call, typeof(Type).GetMethod("GetTypeFromHandle", new[] {typeof(RuntimeTypeHandle)}));
+        }
+
+        public static void EmitLdMethod(this ILGenerator gen, MethodInfo method)
+        {
+            gen.Emit(OpCodes.Ldtoken, method);
+            gen.Emit(OpCodes.Call, typeof(MethodBase).GetMethod("GetMethodFromHandle", new[] { typeof(RuntimeMethodHandle) }));
+            gen.Emit(OpCodes.Castclass, typeof(MethodInfo));
         }
 
         public static void EmitOpEqualityCall(this ILGenerator gen, Type type)

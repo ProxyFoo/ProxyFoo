@@ -24,6 +24,7 @@ namespace ProxyFoo.Core
 {
     public interface ISubjectCoder
     {
+        void Start(IProxyCoderContext coderContext);
         void GenerateMethod(PropertyInfo pi, MethodInfo mi, ILGenerator gen);
     }
 }

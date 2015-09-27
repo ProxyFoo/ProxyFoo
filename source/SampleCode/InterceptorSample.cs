@@ -17,17 +17,23 @@
 #endregion
 
 using System;
-using System.Reflection;
-using System.Reflection.Emit;
-using ProxyFoo.Core.Foo;
 
-namespace ProxyFoo.Core
+namespace SampleCode
 {
-    public interface IProxyModuleCoderAccess
+    public class InterceptorSample : IDisposable
     {
-        ModuleBuilder ModuleBuilder { get; }
-        string AssemblyName { get; }
-        IFooType GetTypeFromProxyClassDescriptor(ProxyClassDescriptor pcd);
-        FieldInfo GetProxyModuleField();
+        readonly IDisposable _target;
+
+        public InterceptorSample(IDisposable target)
+        {
+            _target = target;
+        }
+
+        public void Dispose()
+        {
+            Console.WriteLine("Before Target Dispose");
+            _target.Dispose();
+            Console.WriteLine("After Target Dispose");
+        }
     }
 }

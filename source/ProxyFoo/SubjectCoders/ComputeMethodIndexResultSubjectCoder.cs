@@ -24,7 +24,7 @@ using ProxyFoo.MixinCoders;
 
 namespace ProxyFoo.SubjectCoders
 {
-    class ComputeMethodIndexResultSubjectCoder : ISubjectCoder
+    class ComputeMethodIndexResultSubjectCoder : SubjectCoderBase
     {
         readonly ComputeMethodIndexMixinCoder _mc;
 
@@ -35,7 +35,7 @@ namespace ProxyFoo.SubjectCoders
                 throw new ArgumentNullException("mc");
         }
 
-        public virtual void GenerateMethod(PropertyInfo pi, MethodInfo mi, ILGenerator gen)
+        public override void GenerateMethod(PropertyInfo pi, MethodInfo mi, ILGenerator gen)
         {
             gen.Emit(OpCodes.Ldarg_0); // this
             gen.Emit(OpCodes.Ldfld, _mc.MethodIndexField); // [s0]._methodIndex

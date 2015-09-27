@@ -22,6 +22,7 @@ namespace ProxyFoo.Core
 {
     public abstract class MixinCoderBase : IMixinCoder
     {
+        public virtual void Start(IProxyCodeBuilder pcb) {}
         public virtual void SetupCtor(IProxyCtorBuilder pcb) {}
         public virtual void Generate(IProxyCodeBuilder pcb) {}
     }

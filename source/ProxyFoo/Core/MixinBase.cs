@@ -43,7 +43,7 @@ namespace ProxyFoo.Core
                 subject.Initialize(this);
         }
 
-        public bool IsValid()
+        public virtual bool IsValid()
         {
             return _subjects.All(a => a.IsValid());
         }

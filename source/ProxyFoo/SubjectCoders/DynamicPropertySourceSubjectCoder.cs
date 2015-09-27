@@ -25,7 +25,7 @@ using ProxyFoo.DynamicPropertySources;
 
 namespace ProxyFoo.SubjectCoders
 {
-    class DynamicPropertySourceSubjectCoder : ISubjectCoder
+    class DynamicPropertySourceSubjectCoder : SubjectCoderBase
     {
         readonly IDynamicPropertySourceMixinCoder _dpsmc;
         readonly ModuleBuilder _mb;
@@ -38,7 +38,7 @@ namespace ProxyFoo.SubjectCoders
             _mb = mb;
         }
 
-        public virtual void GenerateMethod(PropertyInfo pi, MethodInfo mi, ILGenerator gen)
+        public override void GenerateMethod(PropertyInfo pi, MethodInfo mi, ILGenerator gen)
         {
             if (pi==null)
                 throw new ArgumentOutOfRangeException("pi", "This proxy can only handle properties");

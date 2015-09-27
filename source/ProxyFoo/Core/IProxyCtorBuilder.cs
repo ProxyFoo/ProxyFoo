@@ -18,14 +18,12 @@
 
 using System;
 using System.Reflection;
-using System.Reflection.Emit;
 
 namespace ProxyFoo.Core
 {
     public interface IProxyCtorBuilder
     {
-        void AddArg(Type type, Action<ILGenerator, ushort> processArgGenAction);
-        FieldInfo AddArgWithBackingField(Type type, string name);
         FieldInfo AddField(Type type, string name);
+        void SetCtorCoder(IProxyCtorCoder ctorCoder);
     }
 }

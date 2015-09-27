@@ -19,15 +19,12 @@
 using System;
 using System.Reflection;
 using System.Reflection.Emit;
-using ProxyFoo.Core.Foo;
 
 namespace ProxyFoo.Core
 {
-    public interface IProxyModuleCoderAccess
+    public abstract class SubjectCoderBase : ISubjectCoder
     {
-        ModuleBuilder ModuleBuilder { get; }
-        string AssemblyName { get; }
-        IFooType GetTypeFromProxyClassDescriptor(ProxyClassDescriptor pcd);
-        FieldInfo GetProxyModuleField();
+        public virtual void Start(IProxyCoderContext coderContext) {}
+        public abstract void GenerateMethod(PropertyInfo pi, MethodInfo mi, ILGenerator gen);
     }
 }

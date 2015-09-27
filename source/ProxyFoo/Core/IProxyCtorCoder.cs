@@ -17,17 +17,16 @@
 #endregion
 
 using System;
-using System.Reflection;
+using System.Collections.Generic;
 using System.Reflection.Emit;
-using ProxyFoo.Core.Foo;
 
 namespace ProxyFoo.Core
 {
-    public interface IProxyModuleCoderAccess
+    public interface IProxyCtorCoder
     {
-        ModuleBuilder ModuleBuilder { get; }
-        string AssemblyName { get; }
-        IFooType GetTypeFromProxyClassDescriptor(ProxyClassDescriptor pcd);
-        FieldInfo GetProxyModuleField();
+        IEnumerable<Type> Args { get; }
+        void Start(ILGenerator gen);
+        void ProcessArg(ILGenerator gen, ushort argIndex);
+        void Complete(ILGenerator gen);
     }
 }

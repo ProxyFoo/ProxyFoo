@@ -25,7 +25,7 @@ using ProxyFoo.Core.PerSubjectCoders;
 
 namespace ProxyFoo.SubjectCoders
 {
-    public class MethodExistsProxyMetaSubjectCoder : ISubjectCoder
+    public class MethodExistsProxyMetaSubjectCoder : SubjectCoderBase
     {
         readonly IProxyCodeBuilder _pcb;
 
@@ -34,7 +34,7 @@ namespace ProxyFoo.SubjectCoders
             _pcb = pcb;
         }
 
-        public virtual void GenerateMethod(PropertyInfo pi, MethodInfo mi, ILGenerator gen)
+        public override void GenerateMethod(PropertyInfo pi, MethodInfo mi, ILGenerator gen)
         {
             gen.DeclareLocal(typeof(Type));
             gen.EmitLdType(mi.GetGenericArguments()[0]);

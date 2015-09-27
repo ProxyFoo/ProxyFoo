@@ -22,6 +22,7 @@ namespace ProxyFoo.Core
 {
     public interface IMixinCoder
     {
+        void Start(IProxyCodeBuilder pcb);
         void SetupCtor(IProxyCtorBuilder pcb);
         void Generate(IProxyCodeBuilder pcb);
     }

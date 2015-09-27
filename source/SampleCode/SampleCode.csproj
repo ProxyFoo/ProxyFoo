@@ -48,6 +48,7 @@
     <Compile Include="CheckForNullResult.cs" />
     <Compile Include="DuckSample.cs" />
     <Compile Include="DuckSampleProxy.cs" />
+    <Compile Include="DynamicMethodSample.cs" />
     <Compile Include="GenericClass.cs" />
     <Compile Include="GenericMethodImpl.cs" />
     <Compile Include="IGenericMethod.cs" />
@@ -57,6 +58,9 @@
     <Compile Include="ImplicitNullableConversionSample.cs" />
     <Compile Include="ImplicitNumericSample.cs" />
     <Compile Include="IndexAccessSample.cs" />
+    <Compile Include="InterceptorProxy.cs" />
+    <Compile Include="InterceptorSample.cs" />
+    <Compile Include="InterceptorTarget.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Samples.cs" />
     <Compile Include="StaticFactorySample.cs" />

@@ -26,7 +26,7 @@ using ProxyFoo.Mixins;
 
 namespace ProxyFoo.MixinCoders
 {
-    public class StaticInstanceMixinCoder : IMixinCoder
+    public class StaticInstanceMixinCoder : MixinCoderBase
     {
         readonly StaticInstanceOptions _options;
 
@@ -35,9 +35,9 @@ namespace ProxyFoo.MixinCoders
             _options = options;
         }
 
-        public void SetupCtor(IProxyCtorBuilder pcb) {}
+        public override void SetupCtor(IProxyCtorBuilder pcb) {}
 
-        public void Generate(IProxyCodeBuilder pcb)
+        public override void Generate(IProxyCodeBuilder pcb)
         {
             if (pcb.CtorArgs.Any())
                 throw new InvalidOperationException("Cannot use StaticInstanceMixin when there are constructor arguments");

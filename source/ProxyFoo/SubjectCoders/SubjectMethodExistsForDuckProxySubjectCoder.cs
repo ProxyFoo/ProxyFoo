@@ -28,7 +28,7 @@ using ProxyFoo.Mixins;
 
 namespace ProxyFoo.SubjectCoders
 {
-    class SubjectMethodExistsForDuckProxySubjectCoder : ISubjectCoder
+    class SubjectMethodExistsForDuckProxySubjectCoder : SubjectCoderBase
     {
         readonly Type _methodExistsSubjectType;
         readonly Type _realSubjectType;
@@ -79,7 +79,7 @@ namespace ProxyFoo.SubjectCoders
             return method;
         }
 
-        public void GenerateMethod(PropertyInfo pi, MethodInfo mi, ILGenerator gen)
+        public override void GenerateMethod(PropertyInfo pi, MethodInfo mi, ILGenerator gen)
         {
             var parameters = mi.GetParameters();
             if (parameters.Length!=1)

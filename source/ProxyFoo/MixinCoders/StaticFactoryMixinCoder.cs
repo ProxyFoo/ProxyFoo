@@ -25,7 +25,7 @@ using ProxyFoo.Mixins;
 
 namespace ProxyFoo.MixinCoders
 {
-    public class StaticFactoryMixinCoder : IMixinCoder
+    public class StaticFactoryMixinCoder : MixinCoderBase
     {
         TypeBuilder _tb;
         MethodBuilder _factoryDelegateMethod;
@@ -37,9 +37,9 @@ namespace ProxyFoo.MixinCoders
             _ctor = ctor;
         }
 
-        public virtual void SetupCtor(IProxyCtorBuilder pcb) {}
+        public override void SetupCtor(IProxyCtorBuilder pcb) {}
 
-        public virtual void Generate(IProxyCodeBuilder pcb)
+        public override void Generate(IProxyCodeBuilder pcb)
         {
             _tb = (TypeBuilder)pcb.SelfType;
             if (_ctor==null)

@@ -27,21 +27,15 @@ namespace ProxyFoo.Core
 {
     public class ProxyClassCoder : IProxyCoderContext
     {
-        static readonly ConstructorInfo ObjectCtor;
         readonly ProxyClassDescriptor _pcd;
         readonly IProxyModuleCoderAccess _pm;
         readonly ModuleBuilder _mb;
         TypeBuilder _tb;
         IFooTypeBuilder _ftb;
         readonly List<MixinCoderContext> _mixinCoderContexts = new List<MixinCoderContext>();
-        readonly List<ConstructorArgInfo> _constructorArgs = new List<ConstructorArgInfo>();
+        readonly List<IProxyCtorCoder> _ctorCoders = new List<IProxyCtorCoder>();
         readonly List<FieldInfo> _fields = new List<FieldInfo>();
         ConstructorBuilder _ctor;
-
-        static ProxyClassCoder()
-        {
-            ObjectCtor = typeof(object).GetConstructor(Type.EmptyTypes);
-        }
 
         protected internal ProxyClassCoder(IProxyModuleCoderAccess pm, ProxyClassDescriptor pcd)
         {
@@ -80,8 +74,9 @@ namespace ProxyFoo.Core
             whenTypeDefined(_ftb);
 
             CreateMixinCoderContexts();
+            _mixinCoderContexts.ForEach(a => a.Start());
             _mixinCoderContexts.ForEach(a => a.SetupCtor());
-            GenerateConstructor();
+            GenerateConstructors(_pcd.BaseClassType);
             _mixinCoderContexts.ForEach(a => a.Generate());
             _mixinCoderContexts.ForEach(a => a.CreateSubjectCoderContexts());
             _mixinCoderContexts.ForEach(a => a.GenerateSubjects());
@@ -99,24 +94,40 @@ namespace ProxyFoo.Core
             }
         }
 
-        protected virtual void GenerateConstructor()
+        protected virtual void GenerateConstructors(Type baseType)
         {
+            foreach (var ctor in baseType.GetConstructors())
+                GenerateConstructor(ctor);
+        }
+
+        protected virtual void GenerateConstructor(ConstructorInfo baseCtor)
+        {
+            var baseParameters = baseCtor.GetParameters();
             _ctor = _ftb.DefineConstructor(
                 MethodAttributes.Public,
                 CallingConventions.Standard,
-                _constructorArgs.Select(a => a.Type).ToArray());
+                baseParameters.Select(p => p.ParameterType)
+                    .Concat(_ctorCoders.SelectMany(c => c.Args)).ToArray());
 
             var gen = _ctor.GetILGenerator();
 
-            // Initialize this or it fails PE verification (still runs..)
+            // Call to base constructor using matching args
             gen.Emit(OpCodes.Ldarg_0);
-            gen.Emit(OpCodes.Call, ObjectCtor);
-
             ushort index = 1;
-            foreach (var arg in _constructorArgs)
+            for (; index <= baseParameters.Length; ++index)
+                gen.EmitBestLdArg(index);
+            gen.Emit(OpCodes.Call, baseCtor);
+
+            // Process additional args for the proxy
+            foreach (var ctorCoder in _ctorCoders)
             {
-                arg.ProcessArgGenAction(gen, index);
-                ++index;
+                ctorCoder.Start(gen);
+                foreach (var arg in ctorCoder.Args)
+                {
+                    ctorCoder.ProcessArg(gen, index);
+                    ++index;
+                }
+                ctorCoder.Complete(gen);
             }
 
             gen.Emit(OpCodes.Ret);
@@ -124,6 +135,8 @@ namespace ProxyFoo.Core
 
         internal void GenerateMethods(Type type, ISubjectCoder sc)
         {
+            sc.Start(this);
+
             var definedProperties = new Dictionary<PropertyInfo, PropertyBuilder>();
             foreach (var subjectMethod in SubjectMethod.GetAllForType(type))
             {
@@ -207,12 +220,6 @@ namespace ProxyFoo.Core
             return (type.IsGenericType ? type.GetGenericTypeDefinition().FullName : type.FullName) + ".";
         }
 
-        class ConstructorArgInfo
-        {
-            internal Type Type { get; set; }
-            internal Action<ILGenerator, ushort> ProcessArgGenAction { get; set; }
-        }
-
         class MixinCoderContext : IMixinCoderContext
         {
             readonly ProxyClassCoder _proxyCoder;
@@ -226,8 +233,8 @@ namespace ProxyFoo.Core
             {
                 _proxyCoder = proxyCoder;
                 _mixin = mixin;
-                _mixinCoder = mixin.CreateCoder();
                 _index = index;
+                _mixinCoder = mixin.CreateCoder();
             }
 
             public IProxyCoderContext ProxyCoderContext
@@ -243,6 +250,12 @@ namespace ProxyFoo.Core
                         throw new InvalidOperationException("Cannot request SubjectCoderContexts at this stage in proxy class generation.");
                     return _subjectCoderStates;
                 }
+            }
+
+            internal void Start()
+            {
+                _pcb = new ProxyCodeBuilder(_proxyCoder, _index);
+                _mixinCoder.Start(_pcb);
             }
 
             internal void SetupCtor()
@@ -280,11 +293,6 @@ namespace ProxyFoo.Core
                 _index = index;
             }
 
-            public void AddArg(Type type, Action<ILGenerator, ushort> processArgGenAction)
-            {
-                _proxyCoder._constructorArgs.Add(new ConstructorArgInfo() {Type = type, ProcessArgGenAction = processArgGenAction});
-            }
-
             public FieldInfo AddField(Type type, string name)
             {
                 name += "_" + _index;
@@ -293,18 +301,9 @@ namespace ProxyFoo.Core
                 return field;
             }
 
-            public FieldInfo AddArgWithBackingField(Type type, string name)
+            public void SetCtorCoder(IProxyCtorCoder ctorCoder)
             {
-                var field = AddField(type, name);
-                AddArg(type, (gen, i) => InitBackingField(gen, i, field));
-                return field;
-            }
-
-            void InitBackingField(ILGenerator gen, ushort argIndex, FieldInfo field)
-            {
-                gen.Emit(OpCodes.Ldarg_0);
-                gen.EmitBestLdArg(argIndex);
-                gen.Emit(OpCodes.Stfld, field);
+                _proxyCoder._ctorCoders.Add(ctorCoder);
             }
         }
 
@@ -331,7 +330,7 @@ namespace ProxyFoo.Core
 
             public IEnumerable<Type> CtorArgs
             {
-                get { return _proxyCoder._constructorArgs.Select(a => a.Type); }
+                get { return _proxyCoder._ctorCoders.SelectMany(c => c.Args); }
             }
 
             public Type SelfType

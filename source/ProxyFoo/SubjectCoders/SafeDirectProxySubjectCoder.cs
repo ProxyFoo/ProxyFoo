@@ -28,7 +28,7 @@ using ProxyFoo.Subjects;
 
 namespace ProxyFoo.SubjectCoders
 {
-    class SafeDirectProxySubjectCoder : ISubjectCoder
+    class SafeDirectProxySubjectCoder : SubjectCoderBase
     {
         readonly Type _subjectType;
         readonly IRealSubjectMixinCoder _rsmc;
@@ -44,7 +44,7 @@ namespace ProxyFoo.SubjectCoders
             _subjectType = subjectType;
         }
 
-        public virtual void GenerateMethod(PropertyInfo pi, MethodInfo mi, ILGenerator gen)
+        public override void GenerateMethod(PropertyInfo pi, MethodInfo mi, ILGenerator gen)
         {
             var smeType = typeof(ISubjectMethodExists<>).MakeGenericType(_subjectType);
             var getSmeMethod = typeof(IMethodExistsProxyMeta).GetMethod("GetSubjectMethodExists").MakeGenericMethod(new[] {_subjectType});

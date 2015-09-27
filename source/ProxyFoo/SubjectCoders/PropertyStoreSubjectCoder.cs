@@ -24,7 +24,7 @@ using ProxyFoo.Core;
 
 namespace ProxyFoo.SubjectCoders
 {
-    class PropertyStoreSubjectCoder : ISubjectCoder
+    class PropertyStoreSubjectCoder : SubjectCoderBase
     {
         readonly IProxyCodeBuilder _pcb;
         readonly Dictionary<string, FieldInfo> _fields = new Dictionary<string, FieldInfo>();
@@ -34,7 +34,7 @@ namespace ProxyFoo.SubjectCoders
             _pcb = pcb;
         }
 
-        public virtual void GenerateMethod(PropertyInfo pi, MethodInfo mi, ILGenerator gen)
+        public override void GenerateMethod(PropertyInfo pi, MethodInfo mi, ILGenerator gen)
         {
             if (pi==null)
                 throw new ArgumentOutOfRangeException("pi", "This proxy can only handle properties");

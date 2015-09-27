@@ -28,7 +28,7 @@ using ProxyFoo.Subjects;
 
 namespace ProxyFoo.SubjectCoders
 {
-    public class DuckProxySubjectCoder : ISubjectCoder
+    public class DuckProxySubjectCoder : SubjectCoderBase
     {
         static readonly ConstructorInfo MissingMethodConstructor;
         readonly IRealSubjectMixinCoder _rsmc;
@@ -47,7 +47,7 @@ namespace ProxyFoo.SubjectCoders
             _bindings = subject.Type.GetMethods().ToDictionary(mi => mi, subject.GetBestMatch);
         }
 
-        public virtual void GenerateMethod(PropertyInfo pi, MethodInfo mi, ILGenerator gen)
+        public override void GenerateMethod(PropertyInfo pi, MethodInfo mi, ILGenerator gen)
         {
             var bestMatch = _bindings[mi];
             if (!bestMatch.Bindable)

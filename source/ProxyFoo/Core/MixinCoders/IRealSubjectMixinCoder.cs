@@ -17,6 +17,7 @@
 #endregion
 
 using System;
+using System.Reflection;
 using System.Reflection.Emit;
 
 namespace ProxyFoo.Core.MixinCoders
@@ -24,5 +25,6 @@ namespace ProxyFoo.Core.MixinCoders
     public interface IRealSubjectMixinCoder
     {
         void PutRealSubjectOnStack(ILGenerator gen);
+        InterfaceMapping GetInterfaceMap(Type interfaceType);
     }
 }

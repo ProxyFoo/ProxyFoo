@@ -1,6 +1,6 @@
 ﻿#region Apache License Notice
 
-// Copyright © 2014, Silverlake Software LLC
+// Copyright © 2015, Silverlake Software LLC
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -24,21 +24,24 @@ using ProxyFoo.Core.MixinCoders;
 
 namespace ProxyFoo.SubjectCoders
 {
-    public class SafeProxyMetaSubjectCoder : SubjectCoderBase
+    public class InterceptorSubjectCoder : SubjectCoderBase
     {
-        readonly IRealSubjectMixinCoder _rsmc;
+        readonly IInterceptMixinCoder _mpmc;
 
-        public SafeProxyMetaSubjectCoder(IRealSubjectMixinCoder rsmc)
+        public InterceptorSubjectCoder(IInterceptMixinCoder mpmc)
         {
-            _rsmc = rsmc;
+            if (mpmc==null)
+                throw new ArgumentNullException("mpmc");
+            _mpmc = mpmc;
         }
 
         public override void GenerateMethod(PropertyInfo pi, MethodInfo mi, ILGenerator gen)
         {
-            if (_rsmc!=null)
-                _rsmc.PutRealSubjectOnStack(gen);
-            else
-                gen.Emit(OpCodes.Ldnull);
+            _mpmc.PutInterceptorOnStack(gen);
+            var pars = mi.GetParameters();
+            for (ushort i = 1; i <= pars.Length; ++i)
+                gen.EmitBestLdArg(i);
+            gen.Emit(OpCodes.Callvirt, mi);
             gen.Emit(OpCodes.Ret);
         }
     }

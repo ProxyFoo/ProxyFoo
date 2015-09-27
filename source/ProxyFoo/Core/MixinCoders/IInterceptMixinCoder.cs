@@ -17,17 +17,12 @@
 #endregion
 
 using System;
-using System.Reflection;
 using System.Reflection.Emit;
-using ProxyFoo.Core.Foo;
 
-namespace ProxyFoo.Core
+namespace ProxyFoo.Core.MixinCoders
 {
-    public interface IProxyModuleCoderAccess
+    public interface IInterceptMixinCoder
     {
-        ModuleBuilder ModuleBuilder { get; }
-        string AssemblyName { get; }
-        IFooType GetTypeFromProxyClassDescriptor(ProxyClassDescriptor pcd);
-        FieldInfo GetProxyModuleField();
+        void PutInterceptorOnStack(ILGenerator gen);
     }
 }

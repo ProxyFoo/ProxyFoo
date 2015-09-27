@@ -26,7 +26,7 @@ using ProxyFoo.Mixins;
 
 namespace ProxyFoo.SubjectCoders
 {
-    public class SafeNullProxySubjectCoder : ISubjectCoder
+    public class SafeNullProxySubjectCoder : SubjectCoderBase
     {
         readonly IProxyModuleCoderAccess _proxyModule;
 
@@ -35,7 +35,7 @@ namespace ProxyFoo.SubjectCoders
             _proxyModule = proxyModule;
         }
 
-        public virtual void GenerateMethod(PropertyInfo pi, MethodInfo mi, ILGenerator gen)
+        public override void GenerateMethod(PropertyInfo pi, MethodInfo mi, ILGenerator gen)
         {
             // Set default values for out parameters
             foreach (var par in mi.GetParameters().Where(p => p.IsOut))

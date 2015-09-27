@@ -1,6 +1,6 @@
 ﻿#region Apache License Notice
 
-// Copyright © 2014, Silverlake Software LLC
+// Copyright © 2015, Silverlake Software LLC
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,29 +17,27 @@
 #endregion
 
 using System;
-using System.Reflection;
-using System.Reflection.Emit;
 using ProxyFoo.Core;
 using ProxyFoo.Core.MixinCoders;
+using ProxyFoo.Mixins;
+using ProxyFoo.SubjectCoders;
 
-namespace ProxyFoo.SubjectCoders
+namespace ProxyFoo.Subjects
 {
-    public class SafeProxyMetaSubjectCoder : SubjectCoderBase
+    public class InterceptSubject : SubjectBase
     {
-        readonly IRealSubjectMixinCoder _rsmc;
+        internal InterceptSubject(Type targetInterface) : base(targetInterface) {}
 
-        public SafeProxyMetaSubjectCoder(IRealSubjectMixinCoder rsmc)
+        public override void Initialize(IMixinDescriptor mixin)
         {
-            _rsmc = rsmc;
+            if (!(mixin is InterceptMixin))
+                throw new InvalidOperationException("An intercept subject must be part of a intercept mixin.");
+            base.Initialize(mixin);
         }
 
-        public override void GenerateMethod(PropertyInfo pi, MethodInfo mi, ILGenerator gen)
+        public override ISubjectCoder CreateCoder(IMixinCoder mc, IProxyCodeBuilder pcb)
         {
-            if (_rsmc!=null)
-                _rsmc.PutRealSubjectOnStack(gen);
-            else
-                gen.Emit(OpCodes.Ldnull);
-            gen.Emit(OpCodes.Ret);
+            return new InterceptorSubjectCoder(mc as IInterceptMixinCoder);
         }
     }
 }

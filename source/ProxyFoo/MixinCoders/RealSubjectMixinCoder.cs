@@ -37,13 +37,19 @@ namespace ProxyFoo.MixinCoders
 
         public override void SetupCtor(IProxyCtorBuilder pcb)
         {
-            _realSubjectField = pcb.AddArgWithBackingField(_realSubjectType, "_rs");
+            _realSubjectField = pcb.AddField(_realSubjectType, "_rs");
+            pcb.SetCtorCoder(new CtorCoderForArgWithBackingField(_realSubjectField));
         }
 
         void IRealSubjectMixinCoder.PutRealSubjectOnStack(ILGenerator gen)
         {
             gen.Emit(OpCodes.Ldarg_0);
             gen.Emit(OpCodes.Ldfld, _realSubjectField);
+        }
+
+        InterfaceMapping IRealSubjectMixinCoder.GetInterfaceMap(Type interfaceType)
+        {
+            return _realSubjectType.GetInterfaceMap(interfaceType);
         }
     }
 }

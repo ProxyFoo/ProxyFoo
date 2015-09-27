@@ -30,7 +30,8 @@ namespace ProxyFoo.MixinCoders
 
         public override void SetupCtor(IProxyCtorBuilder pcb)
         {
-            _dpsField = pcb.AddArgWithBackingField(typeof(IDynamicPropertySource), "_dps");
+            _dpsField = pcb.AddField(typeof(IDynamicPropertySource), "_dps");
+            pcb.SetCtorCoder(new CtorCoderForArgWithBackingField(_dpsField));
         }
 
         public FieldInfo DpsField

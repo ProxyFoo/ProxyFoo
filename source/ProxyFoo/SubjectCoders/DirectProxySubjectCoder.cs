@@ -24,7 +24,7 @@ using ProxyFoo.Core.MixinCoders;
 
 namespace ProxyFoo.SubjectCoders
 {
-    public class DirectProxySubjectCoder : ISubjectCoder
+    public class DirectProxySubjectCoder : SubjectCoderBase
     {
         readonly IRealSubjectMixinCoder _rsmc;
 
@@ -35,7 +35,7 @@ namespace ProxyFoo.SubjectCoders
             _rsmc = rsmc;
         }
 
-        public virtual void GenerateMethod(PropertyInfo pi, MethodInfo mi, ILGenerator gen)
+        public override void GenerateMethod(PropertyInfo pi, MethodInfo mi, ILGenerator gen)
         {
             _rsmc.PutRealSubjectOnStack(gen);
             var pars = mi.GetParameters();
