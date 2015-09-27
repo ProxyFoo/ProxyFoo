@@ -22,7 +22,7 @@ v0.2.1:
 v0.2.0:
 - Add support for out/ref parameters and recursive type definitions.</releaseNotes>
         <copyright>Copyright 2014 Silverlake Software LLC.  Licensed under the Apache License, Version 2.0.</copyright>
-        <tags>ProxyFoo Duck DuckTyping dynamic</tags>
+        <tags>ProxyFoo Duck DuckTyping Dynamic Proxy Typing Casting Intercept Mixin</tags>
     </metadata>
     <files>
         <file src="..\output\release\ProxyFoo.dll" target="lib\net40-client" />
