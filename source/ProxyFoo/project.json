@@ -1,0 +1,39 @@
+﻿{
+  "version": "0.3.1-*",
+  "description": "ProxyFoo is a library for the .NET Framework to facilitate creating high-performance proxies for Duck casting, null safe wrappers, method interception, and other uses.",
+  "authors": [ "Silverlake Software LLC" ],
+  "owners": [ "Jamie da Silva" ],
+  "tags": [ "ProxyFoo Duck DuckTyping Dynamic Proxy Typing Casting Intercept Mixin" ],
+  "projectUrl": "https://github.com/ProxyFoo/ProxyFoo",
+  "licenseUrl": "http://www.apache.org/licenses/LICENSE-2.0.html",
+  "requireLicenseAcceptance": false,
+  "copyright": "Copyright © 2012-2016 Silverlake Software LLC",
+
+  "frameworks": {
+    "net40-client": {
+      "compilationOptions": { "define": [ "NET40", "FEATURE_LEGACYREFLECTION", "FEATURE_SAVEASSEMBLY" ] }
+    },
+    "net45": {
+      "compilationOptions": { "define": [ "NET40", "NET45", "FEATURE_SAVEASSEMBLY" ] },
+      "frameworkAssemblies": {
+        "System.Reflection": "4.0.0.0" 
+      }
+    },
+    "dotnet54": {
+      "compilationOptions": { "define": [ "NETSTANDARD13", "FEATURE_NOAPPDOMAIN" ] },
+      "dependencies": {
+        "Microsoft.CSharp": "4.0.1-beta-23516",
+        "System.Collections": "4.0.11-beta-23516",
+        "System.Linq": "4.0.1-beta-23516",
+        "System.Runtime": "4.0.21-beta-23516",
+        "System.Threading": "4.0.11-beta-23516",
+        "System.Reflection": "4.1.0-beta-23516",
+        "System.Reflection.Emit": "4.0.1-beta-23516",
+        "System.Reflection.Emit.ILGeneration": "4.0.1-beta-23516",
+        "System.Reflection.TypeExtensions": "4.1.0-beta-23516",
+        "System.Diagnostics.Tools": "4.0.1-beta-23516",
+        "System.Collections.Concurrent": "4.0.11-beta-23516"
+      }
+    }
+  }
+}

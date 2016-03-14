@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
 using System.Reflection.Emit;
 
 namespace ProxyFoo.Core.Bindings
@@ -75,7 +76,9 @@ namespace ProxyFoo.Core.Bindings
             gen.Emit(OpCodes.Newobj, ctorDecimal);
         }
 
+#if NET40
         [ExcludeFromCodeCoverage]
+#endif
         void VerifyTargetTypeIsDecimal()
         {
             if (_targetType!=typeof(decimal))

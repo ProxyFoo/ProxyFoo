@@ -17,6 +17,7 @@
 #endregion
 
 using System;
+using System.Reflection;
 using System.Collections.Generic;
 using NUnit.Framework;
 using ProxyFoo.Mixins;

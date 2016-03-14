@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
+using ProxyFoo.Core;
 
 namespace ProxyFoo.Tests
 {
@@ -195,7 +196,7 @@ namespace ProxyFoo.Tests
             var result = type.GetMethod(name);
             if (result!=null)
                 return result;
-            return type==typeof(object) ? null : GetMethodFromTypeOrBaseType(type.BaseType, name);
+            return type==typeof(object) ? null : GetMethodFromTypeOrBaseType(type.BaseType(), name);
         }
 
         static MethodInfo GetEqualsMethodFromTypeOrBaseType(Type type)
@@ -207,7 +208,7 @@ namespace ProxyFoo.Tests
             var result = type.GetMethod("Equals", new[] {type});
             if (result!=null)
                 return result;
-            return type==typeof(object) ? null : GetEqualsMethodFromTypeOrBaseType(type.BaseType);
+            return type==typeof(object) ? null : GetEqualsMethodFromTypeOrBaseType(type.BaseType());
         }
     }
 }

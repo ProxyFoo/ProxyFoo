@@ -236,8 +236,11 @@ namespace ProxyFoo.Tests.Core.Bindings
             binding.GenerateCall(proxyModule, gen);
 
             gen.Emit(OpCodes.Ret);
+#if FEATURE_LEGACYREFLECTION
             var mcType = tb.CreateType();
-
+#else
+            var mcType = tb.CreateTypeInfo().AsType();
+#endif
             object mc = Activator.CreateInstance(mcType, this);
             var callMethod = mcType.GetMethod("Call");
             return callMethod.Invoke(mc, args);

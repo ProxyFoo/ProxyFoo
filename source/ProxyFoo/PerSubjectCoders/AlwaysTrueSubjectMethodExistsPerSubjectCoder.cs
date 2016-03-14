@@ -17,6 +17,7 @@
 #endregion
 
 using System;
+using System.Reflection;
 using System.Reflection.Emit;
 using ProxyFoo.Core.PerSubjectCoders;
 using ProxyFoo.Core.SubjectTypes;

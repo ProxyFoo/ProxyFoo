@@ -29,14 +29,14 @@ namespace ProxyFoo.Tests.Subjects
     {
         protected override IEnumerable<SafeNullProxySubject> CreateSamples()
         {
-            yield return new SafeNullProxySubject(typeof(ICloneable));
+            yield return new SafeNullProxySubject(typeof(IConvertible));
             yield return new SafeNullProxySubject(typeof(IComparable));
         }
 
         [Test]
         public void CanCreateCoder()
         {
-            var subject = new SafeNullProxySubject(typeof(ICloneable));
+            var subject = new SafeNullProxySubject(typeof(IConvertible));
             var mixin = new EmptyMixin(subject);
             var mixinCoder = mixin.CreateCoder();
             Assert.That(subject.CreateCoder(mixinCoder, new NullProxyCodeBuilder()), Is.Not.Null);

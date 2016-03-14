@@ -62,7 +62,11 @@ namespace ProxyFoo.Core
 
         public static void EmitOpEqualityCall(this ILGenerator gen, Type type)
         {
-            gen.Emit(OpCodes.Call, type.GetMethod("op_Equality", new[] {type, type}));
+#if NETSTANDARD13
+            gen.Emit(OpCodes.Call, type.GetMethod("Equals", new[] {type}));
+#else
+            gen.Emit(OpCodes.Call, type.GetMethod("op_Equality", BindingFlags.Public | BindingFlags.Static));
+#endif
         }
 
         /// <summary>
@@ -73,7 +77,7 @@ namespace ProxyFoo.Core
         /// <param name="type">The Type of the value</param>
         public static void EmitStoreToRef(this ILGenerator gen, Type type)
         {
-            if (type.IsEnum)
+            if (type.IsEnum())
                 type = type.GetEnumUnderlyingType();
 
             if (type==typeof(byte) || type==typeof(sbyte))
@@ -100,11 +104,11 @@ namespace ProxyFoo.Core
             {
                 gen.Emit(OpCodes.Stind_R8);
             }
-            else if (type.IsClass || type.IsInterface)
+            else if (type.IsClass() || type.IsInterface())
             {
                 gen.Emit(OpCodes.Stind_Ref);
             }
-            else if (type.IsValueType)
+            else if (type.IsValueType())
             {
                 gen.Emit(OpCodes.Stobj, type);
             }
@@ -116,11 +120,11 @@ namespace ProxyFoo.Core
 
         public static void EmitLdDefaultValue(this ILGenerator gen, Type returnType)
         {
-            if (returnType.IsEnum)
-                returnType = returnType.GetEnumUnderlyingType();
+            if (returnType.IsEnum())
+                returnType = TypeExtensions.GetEnumUnderlyingType(returnType);
 
             if (returnType==typeof(void)) {}
-            else if (returnType.IsClass || returnType.IsInterface)
+            else if (returnType.IsClass() || returnType.IsInterface())
             {
                 gen.Emit(OpCodes.Ldnull);
             }
@@ -146,7 +150,7 @@ namespace ProxyFoo.Core
                 gen.Emit(OpCodes.Ldc_I4_0);
                 gen.Emit(OpCodes.Newobj, consDecimal);
             }
-            else if (returnType.IsValueType)
+            else if (returnType.IsValueType())
             {
                 var returnTypeLocal = gen.DeclareLocal(returnType);
                 gen.Emit(OpCodes.Ldloca, returnTypeLocal);

@@ -30,14 +30,14 @@ namespace ProxyFoo.Tests.Subjects
     {
         protected override IEnumerable<PropertyStoreSubject> CreateSamples()
         {
-            yield return new PropertyStoreSubject(typeof(ICloneable));
+            yield return new PropertyStoreSubject(typeof(IConvertible));
             yield return new PropertyStoreSubject(typeof(IComparable));
         }
 
         [Test]
         public void CanCreateCoder()
         {
-            var subject = new PropertyStoreSubject(typeof(ICloneable));
+            var subject = new PropertyStoreSubject(typeof(IConvertible));
             var mixin = new EmptyMixin(subject);
             var pcd = new ProxyClassDescriptor(mixin);
             var mixinCoder = mixin.CreateCoder();

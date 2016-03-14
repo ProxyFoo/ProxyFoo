@@ -24,6 +24,7 @@ using NUnit.Framework;
 using ProxyFoo.Core;
 using ProxyFoo.Core.Policies;
 using ProxyFoo.Mixins;
+using System.Linq;
 
 namespace ProxyFoo.Tests
 {
@@ -57,6 +58,7 @@ namespace ProxyFoo.Tests
             Assert.Throws<InvalidOperationException>(() => ProxyModule.Default.Save());
         }
 
+#if FEATURE_SAVEASSEMBLY
         [Test]
         public void CanCreateProxyModuleWithRunAndSaveAccess()
         {
@@ -68,8 +70,10 @@ namespace ProxyFoo.Tests
             CreateSampleProxyType();
             ProxyModule.Default.Save();
             Assert.That(File.Exists(assemblyPath));
+            File.Delete(assemblyPath);
             Assert.That(_createCalled);
         }
+#endif
 
         [Test]
         public void CanCreateProxyModuleWithRunAndCollectAccess()
@@ -80,6 +84,7 @@ namespace ProxyFoo.Tests
             Assert.That(_createCalled);
         }
 
+#if NET40
         [Test]
         public void CannotCreateProxyModuleWithReflectionAccess()
         {
@@ -88,7 +93,9 @@ namespace ProxyFoo.Tests
             Assert.Throws<ArgumentOutOfRangeException>(() => { var pm = ProxyModule.Default; });
             Assert.That(_createCalled);
         }
+#endif
 
+#if FEATURE_SAVEASSEMBLY
         [Test]
         public void CannotCreateProxyModuleWithSaveAccess()
         {
@@ -97,7 +104,9 @@ namespace ProxyFoo.Tests
             Assert.Throws<ArgumentOutOfRangeException>(() => { var pm = ProxyModule.Default; });
             Assert.That(_createCalled);
         }
+#endif
 
+#if NET40
         [Test]
         public void InternalModuleCreationHandlesBadAccessValue()
         {
@@ -110,6 +119,7 @@ namespace ProxyFoo.Tests
             Assert.Throws<InvalidOperationException>(() => CreateSampleProxyType());
             Assert.That(_createCalled);
         }
+#endif
 
         [Test]
         public void ProxyModuleFieldExists()
@@ -157,7 +167,7 @@ namespace ProxyFoo.Tests
             var pcd = new ProxyClassDescriptor(
                 new RealSubjectMixin(typeof(object)));
             var typeB = ProxyModule.Default.GetTypeFromProxyClassDescriptor(pcd);
-            Assert.That(typeB.Module, Is.SameAs(typeA.Module));
+            Assert.That(typeB.Module(), Is.SameAs(typeA.Module()));
         }
 
         [Test]
@@ -192,8 +202,7 @@ namespace ProxyFoo.Tests
             ProxyFooPolicies.ProxyModuleFactory = () => new ProxyModule(customAssemblyName);
             var type = CreateSampleProxyType();
             Assert.That(type.Namespace, Is.EqualTo(customAssemblyName));
-            Assert.That(type.Assembly.GetName().Name, Is.EqualTo(customAssemblyName));
-            Assert.That(type.Assembly.GetModule(customAssemblyName + ".dll"), Is.Not.Null);
+            Assert.That(type.Assembly().GetName().Name, Is.EqualTo(customAssemblyName));
         }
 
         ProxyModule CreateProxyModule(AssemblyBuilderAccess access)
@@ -208,6 +217,7 @@ namespace ProxyFoo.Tests
             return ProxyModule.Default.GetTypeFromProxyClassDescriptor(pcd);
         }
 
+#if NET40
         class CustomProxyModule : ProxyModule
         {
             public CustomProxyModule()
@@ -218,6 +228,7 @@ namespace ProxyFoo.Tests
                 accessField.SetValue(this, AssemblyBuilderAccess.ReflectionOnly);
             }
         }
+#endif
 
         class CustomFactory
         {

@@ -19,9 +19,16 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using System.Reflection.Emit;
+using System.Text;
+#if FEATURE_PEVERIFY
 using Microsoft.Build.Utilities;
+#endif
 using NUnit.Framework;
+#if NUNIT3
+using NUnit.Framework.Interfaces;
+#endif
 
 namespace ProxyFoo.Tests
 {
@@ -33,16 +40,17 @@ namespace ProxyFoo.Tests
     [TestFixture]
     public abstract class ProxyFooTestsBase
     {
+#if FEATURE_PEVERIFY
         static readonly string PeVerifyPath;
 
         static ProxyFooTestsBase()
         {
             // The +1 was necessary to work on a machine with only .NET 4.5.
-            PeVerifyPath = ToolLocationHelper.GetPathToDotNetFrameworkSdkFile("peverify.exe", TargetDotNetFrameworkVersion.Version40)
-                           ?? ToolLocationHelper.GetPathToDotNetFrameworkSdkFile("peverify.exe", TargetDotNetFrameworkVersion.Version40 + 1);
+            PeVerifyPath = /*ToolLocationHelper.GetPathToDotNetFrameworkSdkFile("peverify.exe", TargetDotNetFrameworkVersion.Version40)
+                           ??*/ ToolLocationHelper.GetPathToDotNetFrameworkSdkFile("peverify.exe", TargetDotNetFrameworkVersion.Version40 + 1);
             Assert.That(File.Exists(PeVerifyPath));
         }
-
+#endif
         [SetUp]
         public virtual void SetUp()
         {
@@ -50,53 +58,73 @@ namespace ProxyFoo.Tests
             foreach (var c in Path.GetInvalidFileNameChars())
                 assemblyName = assemblyName.Replace(c, '_');
             var assemblyPath = assemblyName + ".dll";
+#if FEATURE_PEVERIFY
             if (File.Exists(assemblyPath))
                 File.Delete(assemblyPath);
             ProxyFooPolicies.ProxyModuleFactory = () => new ProxyModule(assemblyName, AssemblyBuilderAccess.RunAndSave);
+#else
+            ProxyFooPolicies.ProxyModuleFactory = () => new ProxyModule(assemblyName, AssemblyBuilderAccess.Run);
+#endif
             ProxyFooPolicies.ClearProxyModule();
         }
 
         [TearDown]
         public virtual void TearDown()
         {
+#if FEATURE_PEVERIFY
             if (!ProxyModule.Default.IsAssemblyCreated)
                 return;
             ProxyModule.Default.Save();
+            var assemblyPath = ProxyModule.Default.AssemblyName + ".dll";
+#if NUNIT3
+            if (TestContext.CurrentContext.Result.Outcome.Status==TestStatus.Passed)
+#else
             if (TestContext.CurrentContext.Result.Status==TestStatus.Passed)
+#endif
             {
-                var assemblyPath = ProxyModule.Default.AssemblyName + ".dll";
                 Assert.That(PeVerifyAssembly(".", assemblyPath), Is.EqualTo(0));
             }
+#endif
             ProxyFooPolicies.ProxyModuleFactory = ProxyFooPolicies.DefaultProxyModuleFactory;
             ProxyFooPolicies.ClearProxyModule();
         }
 
+#if FEATURE_PEVERIFY
         static int PeVerifyAssembly(string resultFolder, string assembly)
         {
-            Console.WriteLine("*** Running PeVerify against {0} ***", assembly);
+            var output = new StringBuilder();
+            output.AppendLine("*** Running PeVerify against " + assembly + " ***");
             var p = new Process()
             {
                 StartInfo = new ProcessStartInfo()
                 {
                     FileName = PeVerifyPath,
-                    Arguments = assembly,
+                    Arguments = assembly + " /nologo",
                     WorkingDirectory = resultFolder,
                     RedirectStandardOutput = true,
+                    RedirectStandardError = true,
                     UseShellExecute = false,
                     CreateNoWindow = true
                 }
             };
 
-            p.OutputDataReceived += (s, e) => Console.WriteLine(e.Data);
+            p.OutputDataReceived += (s, e) => output.AppendLine(e.Data);
             p.Start();
             p.BeginOutputReadLine();
             if (!p.WaitForExit(5000))
             {
                 p.Kill();
+                Console.Write(output);
+                Console.WriteLine(".");
                 Assert.Fail("The peverify process has timed out.");
             }
-            Console.WriteLine(".");
+            if (p.ExitCode!=0)
+            {
+                Console.Write(output);
+                Console.WriteLine(".");
+            }
             return p.ExitCode;
         }
+#endif
     }
 }

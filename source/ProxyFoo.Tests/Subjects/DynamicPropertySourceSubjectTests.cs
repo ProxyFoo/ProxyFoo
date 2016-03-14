@@ -30,14 +30,14 @@ namespace ProxyFoo.Tests.Subjects
     {
         protected override IEnumerable<DynamicPropertySourceSubject> CreateSamples()
         {
-            yield return new DynamicPropertySourceSubject(typeof(ICloneable));
+            yield return new DynamicPropertySourceSubject(typeof(IConvertible));
             yield return new DynamicPropertySourceSubject(typeof(IComparable));
         }
 
         [Test]
         public void CanCreateCoder()
         {
-            var subject = new DynamicPropertySourceSubject(typeof(ICloneable));
+            var subject = new DynamicPropertySourceSubject(typeof(IConvertible));
             var mixin = new DynamicPropertySourceMixin(subject);
             var pcd = new ProxyClassDescriptor(mixin);
             var mixinCoder = mixin.CreateCoder();
@@ -48,7 +48,7 @@ namespace ProxyFoo.Tests.Subjects
         public void ThrowsExceptionWhenUsedWithWrongMixin()
         {
             Assert.Throws<InvalidOperationException>(
-                () => new ProxyClassDescriptor(new EmptyMixin(new DynamicPropertySourceSubject(typeof(ICloneable)))));
+                () => new ProxyClassDescriptor(new EmptyMixin(new DynamicPropertySourceSubject(typeof(IConvertible)))));
         }
     }
 }

@@ -19,6 +19,7 @@
 using System;
 using System.Reflection;
 using System.Reflection.Emit;
+using ProxyFoo.Core;
 
 namespace ProxyFoo.Core.Bindings
 {
@@ -31,7 +32,7 @@ namespace ProxyFoo.Core.Bindings
 
         internal static DuckValueBindingOption TryBind(Type fromType, Type toType)
         {
-            return toType.IsInterface ? new DynamicDuckCastValueBinding(toType, fromType) : null;
+            return toType.IsInterface() ? new DynamicDuckCastValueBinding(toType, fromType) : null;
         }
 
         DynamicDuckCastValueBinding(Type subjectType, Type fromType)

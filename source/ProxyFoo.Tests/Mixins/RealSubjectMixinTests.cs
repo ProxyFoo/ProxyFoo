@@ -37,10 +37,10 @@ namespace ProxyFoo.Tests.Mixins
         {
             yield return new RealSubjectMixin(typeof(object), null);
             yield return new RealSubjectMixin(typeof(Array), null);
-            yield return new RealSubjectMixin(typeof(object), new DirectProxySubject(typeof(ICloneable)));
-            yield return new RealSubjectMixin(typeof(Array), new DirectProxySubject(typeof(ICloneable)));
+            yield return new RealSubjectMixin(typeof(object), new DirectProxySubject(typeof(IConvertible)));
+            yield return new RealSubjectMixin(typeof(Array), new DirectProxySubject(typeof(IConvertible)));
             yield return new RealSubjectMixin(typeof(Array), new DirectProxySubject(typeof(IComparable)));
-            yield return new RealSubjectMixin(typeof(Array), new DuckProxySubject(typeof(ICloneable)));
+            yield return new RealSubjectMixin(typeof(Array), new DuckProxySubject(typeof(IConvertible)));
         }
     }
 }

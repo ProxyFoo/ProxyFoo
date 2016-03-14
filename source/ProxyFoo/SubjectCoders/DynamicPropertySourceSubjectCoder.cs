@@ -47,14 +47,12 @@ namespace ProxyFoo.SubjectCoders
             {
                 gen.Emit(OpCodes.Ldarg_0);
                 gen.Emit(OpCodes.Ldfld, _dpsmc.DpsField);
-                var nameToken = _mb.GetStringConstant(pi.Name);
-                gen.Emit(OpCodes.Ldstr, nameToken.Token);
+//                var nameToken = _mb.GetStringConstant(pi.Name);
+//                gen.Emit(OpCodes.Ldstr, nameToken.Token);
+                gen.Emit(OpCodes.Ldstr, pi.Name);
                 gen.Emit(OpCodes.Callvirt, typeof(IDynamicPropertySource).GetMethod(
                     "GetInt",
-                    BindingFlags.Instance | BindingFlags.Public,
-                    null,
-                    new[] {typeof(string)},
-                    null));
+                    new[] {typeof(string)}));
                 gen.Emit(OpCodes.Ret);
             }
         }

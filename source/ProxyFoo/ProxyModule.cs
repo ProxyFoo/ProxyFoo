@@ -29,7 +29,11 @@ namespace ProxyFoo
     public class ProxyModule : IProxyModuleCoderAccess
     {
         const string DefaultAssemblyName = "ProxyFoo.Dynamic";
+#if FEATURE_SAVEASSEMBLY
         const AssemblyBuilderAccess DefaultAccess = AssemblyBuilderAccess.RunAndSave;
+#else
+        const AssemblyBuilderAccess DefaultAccess = AssemblyBuilderAccess.Run;
+#endif
         static int _factoryTypeCount;
         readonly string _assemblyName;
         readonly string _assemblyNameWithExt;
@@ -67,12 +71,18 @@ namespace ProxyFoo
             {
                 case AssemblyBuilderAccess.Run:
                     break;
+#if FEATURE_SAVEASSEMBLY
                 case AssemblyBuilderAccess.RunAndSave:
                     break;
+#endif
                 case AssemblyBuilderAccess.RunAndCollect:
                     break;
                 default:
+#if FEATURE_SAVEASSEMBLY
                     throw new ArgumentOutOfRangeException("access", "Run, RunAndSave, or RunAndCollect are the only permitted options");
+#else
+                    throw new ArgumentOutOfRangeException("access", "Run or RunAndCollect are the only permitted options");
+#endif
             }
             _access = access;
             _factories = new object[_factoryTypeCount];
@@ -113,7 +123,11 @@ namespace ProxyFoo
 
         protected virtual AssemblyBuilder CreateAssembly()
         {
+#if FEATURE_NOAPPDOMAIN
+            return AssemblyBuilder.DefineDynamicAssembly(new AssemblyName(_assemblyName), _access);
+#else
             return AppDomain.CurrentDomain.DefineDynamicAssembly(new AssemblyName(_assemblyName), _access);
+#endif
         }
 
         protected virtual ModuleBuilder CreateModule()
@@ -123,8 +137,10 @@ namespace ProxyFoo
                 case AssemblyBuilderAccess.Run:
                 case AssemblyBuilderAccess.RunAndCollect:
                     return _ab.DefineDynamicModule(_assemblyNameWithExt);
+#if FEATURE_SAVEASSEMBLY
                 case AssemblyBuilderAccess.RunAndSave:
                     return _ab.DefineDynamicModule(_assemblyNameWithExt, _assemblyNameWithExt);
+#endif
             }
 
             throw new InvalidOperationException("The value of access is unexpected.");
@@ -137,7 +153,11 @@ namespace ProxyFoo
 
         public void Save(string filename)
         {
+#if FEATURE_SAVEASSEMBLY
             _ab.Save(_assemblyNameWithExt);
+#else
+            throw new InvalidOperationException("Cannot save a dynamic assembly in this framework.");
+#endif
         }
 
         public Type GetTypeFromProxyClassDescriptor(ProxyClassDescriptor pcd)

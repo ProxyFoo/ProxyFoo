@@ -45,7 +45,7 @@ namespace ProxyFoo.SubjectCoders
         {
             var mapping = _rsmc.GetInterfaceMap(_subjectType);
             for (int i = 0; i < mapping.InterfaceMethods.Length; ++i)
-                _mapping.Add(mapping.InterfaceMethods[i].MetadataToken, mapping.TargetMethods[i]);
+                _mapping.Add(((MemberInfo)mapping.InterfaceMethods[i]).GetMetadataToken(), mapping.TargetMethods[i]);
 
             GenerateTargetAccessType(coderContext.ProxyModule, mapping.TargetMethods);
 
@@ -66,7 +66,7 @@ namespace ProxyFoo.SubjectCoders
             foreach (var methodInfo in methodInfos)
             {
                 var delegateType = DeclareDelegateType(proxyModule, methodInfo);
-                var delegateField = tb.DefineField("_" + methodInfo.MetadataToken, delegateType, FieldAttributes.Public|FieldAttributes.Static);
+                var delegateField = tb.DefineField("_" + methodInfo.GetMetadataToken(), delegateType, FieldAttributes.Public|FieldAttributes.Static);
 
                 gen.EmitLdType(delegateType);
                 gen.EmitLdMethod(methodInfo);
@@ -82,7 +82,7 @@ namespace ProxyFoo.SubjectCoders
         Type DeclareDelegateType(IProxyModuleCoderAccess proxyModule, MethodInfo methodInfo)
         {
             var mb = proxyModule.ModuleBuilder;
-            string typeName = proxyModule.AssemblyName + ".Delegate_" + methodInfo.MetadataToken;
+            string typeName = proxyModule.AssemblyName + ".Delegate_" + methodInfo.GetMetadataToken();
             var baseType = typeof(MulticastDelegate);
             var tb = mb.DefineType(typeName, TypeAttributes.AutoClass | TypeAttributes.Sealed | TypeAttributes.Public, baseType);
             var ctorTypes = new[] {typeof(object), typeof(IntPtr)};
@@ -130,10 +130,10 @@ namespace ProxyFoo.SubjectCoders
 
         public override void GenerateMethod(PropertyInfo pi, MethodInfo mi, ILGenerator gen)
         {
-            var methodInfo = _mapping[mi.MetadataToken];
+            var methodInfo = _mapping[mi.GetMetadataToken()];
             if (!methodInfo.IsPublic)
             {
-                var delegateField = _targetAccessType.GetField("_" + methodInfo.MetadataToken);
+                var delegateField = _targetAccessType.GetField("_" + methodInfo.GetMetadataToken());
                 gen.Emit(OpCodes.Ldsfld, delegateField);
                 methodInfo = delegateField.FieldType.GetMethod("Invoke");
             }

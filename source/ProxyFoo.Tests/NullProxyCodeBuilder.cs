@@ -40,7 +40,11 @@ namespace ProxyFoo.Tests
         public IProxyCoderContext ProxyCoderContext { get; private set; }
         public ConstructorInfo Ctor { get; private set; }
         public IEnumerable<Type> CtorArgs { get; private set; }
+#if FEATURE_LEGACYREFLECTION
         public Type SelfType { get; private set; }
+#else
+        public TypeInfo SelfType { get; private set; }
+#endif
         public IFooTypeBuilder SelfTypeBuilder { get; private set; }
 
         public ILGenerator DefineStaticCtor()

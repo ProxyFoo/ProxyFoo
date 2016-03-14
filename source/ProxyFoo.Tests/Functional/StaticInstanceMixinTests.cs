@@ -33,7 +33,7 @@ namespace ProxyFoo.Tests.Functional
             var pcd = new ProxyClassDescriptor(new StaticInstanceMixin());
             var proxyType = ProxyModule.Default.GetTypeFromProxyClassDescriptor(pcd);
             object instance = StaticInstanceMixin.GetInstanceValueFor(proxyType);
-            var task = Task.Factory.StartNew(() => StaticInstanceMixin.GetInstanceValueFor(proxyType));
+            var task = Task.Factory.StartNew(() => StaticInstanceMixin.GetInstanceValueFor(proxyType), TaskCreationOptions.LongRunning);
             task.Wait();
             object instance2 = task.Result;
             Assert.That(instance, Is.TypeOf(proxyType));
@@ -46,7 +46,7 @@ namespace ProxyFoo.Tests.Functional
             var pcd = new ProxyClassDescriptor(new StaticInstanceMixin(StaticInstanceOptions.ThreadStatic));
             var proxyType = ProxyModule.Default.GetTypeFromProxyClassDescriptor(pcd);
             object instance = StaticInstanceMixin.GetInstanceValueFor(proxyType);
-            var task = Task.Factory.StartNew(() => StaticInstanceMixin.GetInstanceValueFor(proxyType));
+            var task = Task.Factory.StartNew(() => StaticInstanceMixin.GetInstanceValueFor(proxyType), TaskCreationOptions.LongRunning);
             task.Wait();
             object instance2 = task.Result;
             Assert.That(instance, Is.TypeOf(proxyType));

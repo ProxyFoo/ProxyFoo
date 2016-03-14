@@ -17,6 +17,7 @@
 #endregion
 
 using System;
+using System.Reflection;
 using NUnit.Framework;
 using ProxyFoo.Core.Bindings;
 

@@ -30,14 +30,14 @@ namespace ProxyFoo.Tests.Subjects
     {
         protected override IEnumerable<SafeDirectProxySubject> CreateSamples()
         {
-            yield return new SafeDirectProxySubject(typeof(ICloneable));
+            yield return new SafeDirectProxySubject(typeof(IConvertible));
             yield return new SafeDirectProxySubject(typeof(IComparable));
         }
 
         [Test]
         public void CanCreateCoder()
         {
-            var subject = new SafeDirectProxySubject(typeof(ICloneable));
+            var subject = new SafeDirectProxySubject(typeof(IConvertible));
             var mixin = new RealSubjectMixin(typeof(object), subject);
             var pcd = new ProxyClassDescriptor(mixin);
             var mixinCoder = mixin.CreateCoder();
@@ -47,7 +47,7 @@ namespace ProxyFoo.Tests.Subjects
         [Test]
         public void ThrowsExceptionWhenUsedWithWrongMixin()
         {
-            Assert.Throws<InvalidOperationException>(() => new ProxyClassDescriptor(new EmptyMixin(new SafeDirectProxySubject(typeof(ICloneable)))));
+            Assert.Throws<InvalidOperationException>(() => new ProxyClassDescriptor(new EmptyMixin(new SafeDirectProxySubject(typeof(IConvertible)))));
         }
     }
 }

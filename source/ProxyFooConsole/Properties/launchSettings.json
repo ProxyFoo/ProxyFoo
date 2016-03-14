@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "Tests": {
+      "commandName": "tests",
+      "sdkVersion": "dnx-coreclr-win-x86.1.0.0-rc1-update1"
+    },
+    "Sample": {
+      "commandName": "sample",
+      "sdkVersion": "dnx-coreclr-win-x86.1.0.0-rc1-update1"
+    }
+  }
+}

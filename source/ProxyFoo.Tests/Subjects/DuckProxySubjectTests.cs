@@ -30,14 +30,14 @@ namespace ProxyFoo.Tests.Subjects
     {
         protected override IEnumerable<DuckProxySubject> CreateSamples()
         {
-            yield return new DuckProxySubject(typeof(ICloneable));
+            yield return new DuckProxySubject(typeof(IConvertible));
             yield return new DuckProxySubject(typeof(IComparable));
         }
 
         [Test]
         public void CanCreateCoder()
         {
-            var subject = new DuckProxySubject(typeof(ICloneable));
+            var subject = new DuckProxySubject(typeof(IConvertible));
             var mixin = new RealSubjectMixin(typeof(object), subject);
             var pcd = new ProxyClassDescriptor(mixin);
             var mixinCoder = mixin.CreateCoder();
@@ -48,7 +48,7 @@ namespace ProxyFoo.Tests.Subjects
         public void ThrowsExceptionWhenUsedWithWrongMixin()
         {
             Assert.Throws<InvalidOperationException>(
-                () => new ProxyClassDescriptor(new EmptyMixin(new DuckProxySubject(typeof(ICloneable)))));
+                () => new ProxyClassDescriptor(new EmptyMixin(new DuckProxySubject(typeof(IConvertible)))));
         }
     }
 }

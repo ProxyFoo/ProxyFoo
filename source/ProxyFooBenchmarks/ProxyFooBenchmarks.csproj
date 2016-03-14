@@ -55,9 +55,9 @@
     <Compile Include="SampleClass2.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ProxyFoo\ProxyFoo.csproj">
+    <ProjectReference Include="..\ProxyFoo-Net40\ProxyFoo-Net40.csproj">
       <Project>{44c179b9-8e5f-4b07-9a8c-d8918f49b61e}</Project>
-      <Name>ProxyFoo</Name>
+      <Name>ProxyFoo-Net40</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

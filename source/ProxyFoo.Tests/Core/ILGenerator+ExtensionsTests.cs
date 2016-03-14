@@ -52,7 +52,7 @@ namespace ProxyFoo.Tests.Core
             Assert.That(result, Is.EqualTo(testValue));
         }
 
-        public IEnumerable<object> OtherTypes()
+        public static IEnumerable<object> OtherTypes()
         {
             yield return (decimal)42;
             yield return new object();
@@ -63,7 +63,7 @@ namespace ProxyFoo.Tests.Core
             var proxyModule = ProxyModule.Default;
             var name = "StoreToRefTester" + TestContext.CurrentContext.Test.Name;
 
-            var converter = proxyModule.ModuleBuilder.GetType(name);
+            var converter = proxyModule.ModuleBuilder.GetType(name,false,false);
             if (converter==null)
             {
                 var tb = proxyModule.ModuleBuilder.DefineType(name);

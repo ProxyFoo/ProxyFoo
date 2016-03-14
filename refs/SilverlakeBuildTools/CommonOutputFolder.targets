@@ -9,8 +9,12 @@
     <!-- Setup a common output folder for all projects -->
     <PropertyGroup>
         <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
-        <OutputPath>$(SbtProjectFolder)output\$(SbtSubProjectFolder)$(Configuration)\</OutputPath>
-        <BaseIntermediateOutputPath>$(SbtProjectFolder)temp\$(SbtSubProjectFolder)</BaseIntermediateOutputPath>
+        <OutputPath>$(SbtProjectFolder)output\$(Configuration)-$(SbtSubProjectFolder)\</OutputPath>
+        <BaseIntermediateOutputPath>$(SbtProjectFolder)temp</BaseIntermediateOutputPath>
+        <IntermediateOutputPath>$(BaseIntermediateOutputPath)\$(Configuration)-$(SbtSubProjectFolder)</IntermediateOutputPath>
+    </PropertyGroup>
+    <PropertyGroup Condition="$(MSBuildProjectExtension)=='.xproj'">
+        <OutputPath>$(SbtProjectFolder)output\$(SbtSubProjectFolder)\</OutputPath>
     </PropertyGroup>
     <PropertyGroup Condition="$(MSBuildProjectExtension)=='.wixproj'">
         <IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\</IntermediateOutputPath>

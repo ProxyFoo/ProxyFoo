@@ -26,7 +26,7 @@ namespace ProxyFoo.Core.Foo
         Type AsType();
         ConstructorInfo GetConstructor(Type[] types);
         FieldInfo GetField(string name);
-        PropertyInfo GetProperty(string name, Type[] types);
+        PropertyInfo GetProperty(string name, Type propertyType, Type[] types);
         MethodInfo GetMethod(string name, Type[] types);
     }
 }

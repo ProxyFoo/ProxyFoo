@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using ProxyFoo.Core;
 using ProxyFoo.MixinCoders;
 using ProxyFoo.Subjects;

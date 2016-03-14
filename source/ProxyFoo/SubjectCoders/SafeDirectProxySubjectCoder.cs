@@ -100,7 +100,7 @@ namespace ProxyFoo.SubjectCoders
             gen.Emit(OpCodes.Brtrue_S, retLabel);
 
             // If the return type needs to be made safe then do so
-            if (mi.ReturnType!=typeof(void) && mi.ReturnType.IsInterface)
+            if (mi.ReturnType!=typeof(void) && mi.ReturnType.IsInterface())
             {
                 var notNullLabel = gen.DefineLabel();
                 gen.Emit(OpCodes.Dup); // duplicate the return value on the stack

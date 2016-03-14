@@ -31,7 +31,7 @@ namespace ProxyFoo.Core.Bindings
 
         internal static DuckValueBindingOption TryBind(Type fromType, Type toType)
         {
-            if (!toType.IsInterface || !fromType.IsSealed)
+            if (!toType.IsInterface() || !fromType.IsSealed())
                 return null;
 
             var pcd = new ProxyClassDescriptor(

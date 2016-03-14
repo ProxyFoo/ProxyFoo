@@ -29,7 +29,11 @@ namespace ProxyFoo.Core
         IProxyCoderContext ProxyCoderContext { get; }
         ConstructorInfo Ctor { get; }
         IEnumerable<Type> CtorArgs { get; }
+#if FEATURE_LEGACYREFLECTION
         Type SelfType { get; }
+#else
+        TypeInfo SelfType { get; }
+#endif
         IFooTypeBuilder SelfTypeBuilder { get; }
         ILGenerator DefineStaticCtor();
         FieldInfo AddField(string name, Type type);

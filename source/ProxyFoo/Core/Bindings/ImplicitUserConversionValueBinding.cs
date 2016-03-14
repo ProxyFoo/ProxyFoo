@@ -32,16 +32,16 @@ namespace ProxyFoo.Core.Bindings
             Type coreToType = Nullable.GetUnderlyingType(toType);
 
             // Cannot convert a nullable value type to a non-nullable value type
-            if (coreFromType!=null && coreToType==null && toType.IsValueType)
+            if (coreFromType!=null && coreToType==null && toType.IsValueType())
                 return null;
 
             Type finalFromType = coreFromType ?? fromType;
             Type finalToType = coreToType ?? toType;
 
-            var method = finalFromType.GetMethod("op_Implicit", BindingFlags.Public | BindingFlags.Static, null, new[] {finalFromType}, null);
+            var method = finalFromType.GetMethod("op_Implicit", new[] {finalFromType});
             if (method==null)
             {
-                method = finalToType.GetMethod("op_Implicit", BindingFlags.Public | BindingFlags.Static, null, new[] {finalFromType}, null);
+                method = finalToType.GetMethod("op_Implicit", new[] {finalFromType});
                 if (method==null)
                     return null;
             }

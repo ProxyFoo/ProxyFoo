@@ -17,6 +17,7 @@
 #endregion
 
 using System;
+using System.Reflection;
 using System.Reflection.Emit;
 
 namespace ProxyFoo.Core.Bindings
@@ -97,7 +98,7 @@ namespace ProxyFoo.Core.Bindings
 
         static bool IsNullable(Type type)
         {
-            return type.IsGenericType && type.GetGenericTypeDefinition()==typeof(Nullable<>);
+            return type.IsGenericType() && type.GetGenericTypeDefinition()==typeof(Nullable<>);
         }
     }
 }

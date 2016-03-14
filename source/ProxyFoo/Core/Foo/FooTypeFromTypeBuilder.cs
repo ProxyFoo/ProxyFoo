@@ -37,7 +37,11 @@ namespace ProxyFoo.Core.Foo
 
         public Type AsType()
         {
+#if FEATURE_LEGACYREFLECTION
             return _typeBuilder;
+#else
+            return _typeBuilder.AsType();
+#endif
         }
 
         public ConstructorBuilder DefineConstructor(MethodAttributes attributes, CallingConventions callingConvention, Type[] parameterTypes)
@@ -81,9 +85,9 @@ namespace ProxyFoo.Core.Foo
             return _members.OfType<FieldInfo>().SingleOrDefault(a => a.IsPublic && a.Name==name);
         }
 
-        public PropertyInfo GetProperty(string name, Type[] types)
+        public PropertyInfo GetProperty(string name, Type propertyType, Type[] types)
         {
-            return _members.OfType<PropertyBuilder>().SingleOrDefault(p => p.Name==name && _paramsByMember[p].SequenceEqual(types));
+            return _members.OfType<PropertyBuilder>().SingleOrDefault(p => p.Name==name && p.PropertyType==propertyType && _paramsByMember[p].SequenceEqual(types));
         }
 
         public MethodInfo GetMethod(string name, Type[] types)

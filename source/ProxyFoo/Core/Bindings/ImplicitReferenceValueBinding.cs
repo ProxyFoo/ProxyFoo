@@ -17,6 +17,7 @@
 #endregion
 
 using System;
+using System.Reflection;
 using System.Reflection.Emit;
 
 namespace ProxyFoo.Core.Bindings
@@ -27,7 +28,7 @@ namespace ProxyFoo.Core.Bindings
 
         public static DuckValueBindingOption TryBind(Type fromType, Type toType)
         {
-            if (fromType.IsValueType || toType.IsValueType)
+            if (fromType.IsValueType() || toType.IsValueType())
                 return null;
 
             return toType.IsAssignableFrom(fromType) ? Instance : null;

@@ -172,7 +172,7 @@ namespace ProxyFoo.Core
         {
             var name = fromProperty.Name;
             var parTypes = fromProperty.GetIndexParameters().Select(p => p.ParameterType).ToArray();
-            var existingProperty = _ftb.GetProperty(name, parTypes);
+            var existingProperty = _ftb.GetProperty(name, fromProperty.PropertyType, parTypes);
             if (existingProperty!=null)
                 name = GetPrefixForPrivateImplementation(fromProperty.DeclaringType) + name;
             return _ftb.DefineProperty(name, PropertyAttributes.None, fromProperty.PropertyType, parTypes);
@@ -200,12 +200,12 @@ namespace ProxyFoo.Core
                     var genArg = genArgs[i];
                     var builder = builders[i];
 
-                    builder.SetGenericParameterAttributes(genArg.GenericParameterAttributes);
+                    builder.SetGenericParameterAttributes(genArg.GenericParameterAttributes());
                     var constraints = genArg.GetGenericParameterConstraints();
-                    var baseTypeConstraint = constraints.SingleOrDefault(a => a.IsClass);
+                    var baseTypeConstraint = constraints.SingleOrDefault(a => a.IsClass());
                     if (baseTypeConstraint!=null)
                         builder.SetBaseTypeConstraint(baseTypeConstraint);
-                    builder.SetInterfaceConstraints(constraints.Where(a => !a.IsClass).ToArray());
+                    builder.SetInterfaceConstraints(constraints.Where(a => !a.IsClass()).ToArray());
                 }
             }
 
@@ -217,7 +217,7 @@ namespace ProxyFoo.Core
 
         static string GetPrefixForPrivateImplementation(Type type)
         {
-            return (type.IsGenericType ? type.GetGenericTypeDefinition().FullName : type.FullName) + ".";
+            return (type.IsGenericType() ? type.GetGenericTypeDefinition().FullName : type.FullName) + ".";
         }
 
         class MixinCoderContext : IMixinCoderContext
@@ -332,11 +332,18 @@ namespace ProxyFoo.Core
             {
                 get { return _proxyCoder._ctorCoders.SelectMany(c => c.Args); }
             }
-
+#if FEATURE_LEGACYREFLECTION
             public Type SelfType
             {
                 get { return _proxyCoder._tb; }
             }
+#else
+            public TypeInfo SelfType
+            {
+                get { return _proxyCoder._tb; }
+            }
+#endif
+
 
             public IFooTypeBuilder SelfTypeBuilder
             {

@@ -35,7 +35,11 @@ namespace ProxyFoo.Tests.Core.Bindings
             var proxyModule = ProxyModule.Default;
             var name = "Converter" + TestContext.CurrentContext.Test.Name;
 
-            var converter = proxyModule.ModuleBuilder.GetType(name);
+#if FEATURE_LEGACYREFLECTION
+            var converter = proxyModule.ModuleBuilder.GetType(name, false, false);
+#else
+            var converter = proxyModule.ModuleBuilder.GetType(name,false,false)?.GetTypeInfo();
+#endif
             if (converter==null)
             {
                 var tb = proxyModule.ModuleBuilder.DefineType(name);
@@ -47,10 +51,18 @@ namespace ProxyFoo.Tests.Core.Bindings
                 Assert.That(binding.Score, Is.GreaterThan(DuckValueBindingOption.NotBindable.Score));
                 binding.GenerateConversion(proxyModule, gen);
                 gen.Emit(OpCodes.Ret);
+#if FEATURE_LEGACYREFLECTION
                 converter = tb.CreateType();
+#else
+                converter = tb.CreateTypeInfo();
+#endif
             }
 
+#if FEATURE_LEGACYREFLECTION
             var method = converter.GetMethod("Convert");
+#else
+            var method = converter.GetDeclaredMethod("Convert");
+#endif
             if (method.ReturnType!=toType && method.GetParameters()[0].ParameterType!=fromType)
                 throw new InvalidOperationException("Multiple calls to AttemptConversion in one test must use the same types.");
 

@@ -51,7 +51,7 @@ namespace ProxyFoo.Tests.Subjects
         [Test]
         public void ThrowsExceptionWhenUsedWithWrongMixin()
         {
-            Assert.Throws<InvalidOperationException>(() => new ProxyClassDescriptor(new EmptyMixin(new InterceptTargetSubject(typeof(ICloneable)))));
+            Assert.Throws<InvalidOperationException>(() => new ProxyClassDescriptor(new EmptyMixin(new InterceptTargetSubject(typeof(IConvertible)))));
         }
     }
 }

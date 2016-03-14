@@ -37,7 +37,7 @@ namespace ProxyFoo.Tests.Subjects
         [Test]
         public void CanCreateCoder()
         {
-            var subject = new DirectProxySubject(typeof(ICloneable));
+            var subject = new DirectProxySubject(typeof(IConvertible));
             var mixin = new RealSubjectMixin(typeof(object), subject);
             var pcd = new ProxyClassDescriptor(mixin);
             var mixinCoder = mixin.CreateCoder();
@@ -47,7 +47,7 @@ namespace ProxyFoo.Tests.Subjects
         [Test]
         public void ThrowsExceptionWhenUsedWithWrongMixin()
         {
-            Assert.Throws<InvalidOperationException>(() => new ProxyClassDescriptor(new EmptyMixin(new DirectProxySubject(typeof(ICloneable)))));
+            Assert.Throws<InvalidOperationException>(() => new ProxyClassDescriptor(new EmptyMixin(new DirectProxySubject(typeof(IConvertible)))));
         }
     }
 }

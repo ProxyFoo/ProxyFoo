@@ -30,7 +30,7 @@ namespace ProxyFoo.Tests.Mixins
         protected override IEnumerable<EmptyMixin> CreateSamples()
         {
             yield return new EmptyMixin(null);
-            yield return new EmptyMixin(new PropertyStoreSubject(typeof(ICloneable)));
+            yield return new EmptyMixin(new PropertyStoreSubject(typeof(IConvertible)));
             yield return new EmptyMixin(new PropertyStoreSubject(typeof(IComparable)));
         }
     }

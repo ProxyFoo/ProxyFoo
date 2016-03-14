@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using ProxyFoo.Core;
 using ProxyFoo.Core.Mixins;
 using ProxyFoo.MixinCoders;
@@ -41,7 +42,7 @@ namespace ProxyFoo.Mixins
         public override void Initialize(ProxyClassDescriptor pcd)
         {
             var interfaces = new HashSet<Type>(pcd.Mixins.SelectMany(m => m.Subjects).Select(s => s.Type));
-            _addedSubjects = (from type in _realSubjectType.FindInterfaces((t, c) => true, null)
+            _addedSubjects = (from type in _realSubjectType.GetInterfaces()
                               where !interfaces.Contains(type)
                               select new DirectProxySubject(type)).ToList();
             base.Initialize(pcd);
