@@ -61,10 +61,10 @@ namespace ProxyFooConsole_Package
 
         public static void ExecuteTests(string[] args)
         {
-#if NET451
+#if NET45
             new AutoRun(typeof(ProxyFooTestsBase).GetTypeInfo().Assembly).Execute(args);
 #else
-            new AutoRun(typeof(ProxyFooTestsBase).GetTypeInfo().Assembly).Execute(args, new ExtendedTextWrapper(Console.Out), Console.In);
+            new AutoRun().Execute(typeof(ProxyFooTestsBase).GetTypeInfo().Assembly, Console.Out, Console.In, args);
 #endif
         }
 

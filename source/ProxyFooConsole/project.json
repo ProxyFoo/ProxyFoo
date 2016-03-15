@@ -10,7 +10,6 @@
   },
 
   "dependencies": {
-    "NUnitLite": "3.2.0",
     "ProxyFoo": "",
     "ProxyFoo.Tests": ""
   },
@@ -22,10 +21,14 @@
 
   "frameworks": {
     "dnx451": {
-      "compilationOptions": { "define": [ "NET45" ] }
+      "compilationOptions": { "define": [ "NET45" ] },
+      "dependencies": {
+        "NUnitLite":  "3.2.0"
+      }
     },
     "dnxcore5": {
       "dependencies": {
+        "NUnitLite": "3.0.1",
         "Microsoft.CSharp": "4.0.1-beta-23516",
         "System.Collections": "4.0.11-beta-23516",
         "System.Console": "4.0.0-beta-23516",
