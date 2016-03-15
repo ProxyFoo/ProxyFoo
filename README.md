@@ -19,10 +19,11 @@ Here are some of the very helpful posts I read to work this all out:
 - http://blog.marcgravell.com/2015/11/the-road-to-dnx-part-1.html
 - https://oren.codes/2016/02/08/project-json-all-the-things/
 
-##Mac
-To run the unit tests on the Mac (requires ASP.NET 5 RC Update 1 from https://get.asp.net/):
+##DNX on Mac/Windows
+To run the unit tests using DNX on the Mac or Windows (requires ASP.NET 5 RC Update 1 from https://get.asp.net/):
 
 ```
+git clone https://github.com/ProxyFoo/ProxyFoo ProxyFoo
 cd ProxyFoo
 dnu restore
 dnx -p source/ProxyFooConsole tests
