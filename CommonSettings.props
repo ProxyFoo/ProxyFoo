@@ -8,7 +8,7 @@
         <SbtProductName>ProxyFoo</SbtProductName>
         <SbtMajorVersion>0</SbtMajorVersion>
         <SbtMinorVersion>3</SbtMinorVersion>
-        <SbtBuildNumber>1</SbtBuildNumber>
+        <SbtBuildNumber>2</SbtBuildNumber>
         <SbtCopyrightNotice>Copyright © $(SbtCurrentYear) Silverlake Software LLC. Licensed under the Apache License, Version 2.0.</SbtCopyrightNotice>
     </PropertyGroup>
   

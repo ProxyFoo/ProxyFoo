@@ -2,16 +2,17 @@
   "version": "1.0.0-*",
   "description": "ProxyFoo Console Application",
   "authors": [ "Jamie da Silva" ],
-  "tags": [ "" ],
-  "projectUrl": "",
-  "licenseUrl": "",
-  "compilationOptions": {
+  "buildOptions": {
     "emitEntryPoint": true
   },
 
   "dependencies": {
-    "ProxyFoo": "",
-    "ProxyFoo.Tests": ""
+    "ProxyFoo": {
+      "target": "project"
+    },
+    "ProxyFoo.Tests": {
+      "target": "project"
+    }
   },
 
   "commands": {
@@ -20,20 +21,25 @@
   },
 
   "frameworks": {
-    "dnx451": {
-      "compilationOptions": { "define": [ "NET45" ] },
+    "net45": {
+      "buildOptions": { "define": [ "NET45" ] },
       "dependencies": {
-        "NUnitLite":  "3.2.0"
+        "NUnitLite": "3.2.0"
       }
     },
-    "dnxcore5": {
+    "netcoreapp1.0": {
+      "imports": [ "dnxcore50" ],
       "dependencies": {
+        "Microsoft.NETCore.App": {
+          "type": "platform",
+          "version": "1.0.0-rc2-3002702"
+        },
         "NUnitLite": "3.0.1",
-        "Microsoft.CSharp": "4.0.1-beta-23516",
-        "System.Collections": "4.0.11-beta-23516",
-        "System.Console": "4.0.0-beta-23516",
-        "System.Linq": "4.0.1-beta-23516",
-        "System.Threading": "4.0.11-beta-23516"
+        "Microsoft.CSharp": "4.0.1-rc2-24027",
+        "System.Collections": "4.0.11-rc2-24027",
+        "System.Console": "4.0.0-rc2-24027",
+        "System.Linq": "4.1.0-rc2-24027",
+        "System.Threading": "4.0.11-rc2-24027"
       }
     }
   }

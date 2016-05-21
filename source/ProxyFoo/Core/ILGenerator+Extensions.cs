@@ -62,7 +62,7 @@ namespace ProxyFoo.Core
 
         public static void EmitOpEqualityCall(this ILGenerator gen, Type type)
         {
-#if NETSTANDARD13
+#if NETSTANDARD
             gen.Emit(OpCodes.Call, type.GetMethod("Equals", new[] {type}));
 #else
             gen.Emit(OpCodes.Call, type.GetMethod("op_Equality", BindingFlags.Public | BindingFlags.Static));

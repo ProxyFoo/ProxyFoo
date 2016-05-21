@@ -4,7 +4,7 @@
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">14.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
   </PropertyGroup>
-  <Import Project="$(VSToolsPath)\DNX\Microsoft.DNX.Props" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(VSToolsPath)\DotNet\Microsoft.DotNet.Props" Condition="'$(VSToolsPath)' != ''" />
   <PropertyGroup Label="Globals">
     <ProjectGuid>198e2fdd-535f-4d56-8454-df4af99defed</ProjectGuid>
     <RootNamespace>ProxyFoo</RootNamespace>
@@ -26,6 +26,6 @@
   </PropertyGroup>
   <Import Project="$(SbtProjectFolder)CommonSettings.props" Condition="'$(SbtProjectFolder)'!='' And Exists('$(SbtProjectFolder)CommonSettings.props')" />
   <Import Project="$(SbtImportFolder)ImportBefore.targets" Condition="'$(SbtImportFolder)'!='' And Exists('$(SbtImportFolder)ImportBefore.targets')" />
-  <Import Project="$(VSToolsPath)\DNX\Microsoft.DNX.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(VSToolsPath)\DotNet\Microsoft.DotNet.targets" Condition="'$(VSToolsPath)' != ''" />
   <Import Project="$(SbtImportFolder)ImportAfter.targets" Condition="'$(SbtImportFolder)'!='' And Exists('$(SbtImportFolder)ImportAfter.targets')" />
 </Project>
