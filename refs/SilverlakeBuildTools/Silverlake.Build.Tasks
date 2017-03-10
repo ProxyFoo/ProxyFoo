@@ -1,5 +1,0 @@
-﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-    <UsingTask TaskName="Silverlake.Build.Tasks.GenerateAssemblyInfo" AssemblyFile="Silverlake.Build.Tasks.dll"/>
-    <UsingTask TaskName="Silverlake.Build.Tasks.GetAssemblyVersion" AssemblyFile="Silverlake.Build.Tasks.dll"/>
-    <UsingTask TaskName="Silverlake.Build.Tasks.GetVersionNumber" AssemblyFile="Silverlake.Build.Tasks.dll"/>
-</Project>

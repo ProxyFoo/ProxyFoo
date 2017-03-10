@@ -1,0 +1,58 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  
+  <PropertyGroup>
+    <Description>ProxyFoo is a library for the .NET Framework to facilitate creating high-performance proxies for Duck casting, null safe wrappers, method interception, and other uses.</Description>
+    <Copyright>Copyright © 2012-2017 Silverlake Software LLC</Copyright>
+    <VersionPrefix>0.4.1</VersionPrefix>
+    <!--<VersionSuffix>14</VersionSuffix>-->
+    <Authors>Silverlake Software LLC</Authors>
+    <TargetFrameworks>netstandard1.5;net40-client;net45</TargetFrameworks>
+    <AssemblyName>ProxyFoo</AssemblyName>
+    <PackageId>ProxyFoo</PackageId>
+    <PackageTags>ProxyFoo Duck DuckTyping Dynamic Proxy Typing Casting Intercept Mixin</PackageTags>
+    <PackageProjectUrl>https://github.com/ProxyFoo/ProxyFoo</PackageProjectUrl>
+    <PackageLicenseUrl>http://www.apache.org/licenses/LICENSE-2.0.html</PackageLicenseUrl>
+    <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'net40-client' ">
+    <!-- TargetFrameworkInference does not support net40-client -->
+    <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'net40-client' ">
+    <DefineConstants>$(DefineConstants);NET40;FEATURE_LEGACYREFLECTION;FEATURE_SAVEASSEMBLY</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net40-client' ">
+    <Reference Include="System" />
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'net45' ">
+    <DefineConstants>$(DefineConstants);NET45</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net45' ">
+    <Reference Include="System.Reflection" />
+    <Reference Include="System" />
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard1.5' ">
+    <DefineConstants>$(DefineConstants);NETSTANDARD;FEATURE_NOAPPDOMAIN</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.5' ">
+    <PackageReference Include="System.Reflection" Version="4.3.0" />
+    <PackageReference Include="System.Reflection.Extensions" Version="4.3.0" />
+    <PackageReference Include="System.Reflection.Emit" Version="4.3.0" />
+    <PackageReference Include="System.Reflection.Emit.ILGeneration" Version="4.3.0" />
+    <PackageReference Include="System.Reflection.TypeExtensions" Version="4.3.0" />
+    <PackageReference Include="System.Diagnostics.Debug" Version="4.3.0" />
+    <PackageReference Include="System.Collections.Concurrent" Version="4.3.0" />
+  </ItemGroup>
+
+</Project>

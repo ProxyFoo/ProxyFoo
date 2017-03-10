@@ -1,0 +1,15 @@
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <!-- Setup a common output folder for all projects -->
+  <PropertyGroup>
+    <_RootFolder>$(MSBuildThisFileDirectory)</_RootFolder>
+    <BaseOutputPath>$(_RootFolder)\output\$(MSBuildProjectName)</BaseOutputPath>
+    <BaseIntermediateOutputPath>$(_RootFolder)\temp\$(MSBuildProjectName)</BaseIntermediateOutputPath>
+  </PropertyGroup>
+
+  <!-- Recompile when this file changes -->
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+  </PropertyGroup>
+
+</Project>

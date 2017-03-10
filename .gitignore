@@ -7,10 +7,5 @@
 *.t4properties
 *.force
 *.ide
-**/bin
-**/obj
 output/
 temp/
-TempPE/
-testresult.xml
-project.lock.json

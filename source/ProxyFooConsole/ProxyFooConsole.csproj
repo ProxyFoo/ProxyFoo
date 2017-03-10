@@ -1,0 +1,41 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Description>ProxyFoo Console Application</Description>
+    <Authors>Jamie da Silva</Authors>
+    <TargetFrameworks>net45;netcoreapp1.0</TargetFrameworks>
+    <AssemblyName>ProxyFooConsole</AssemblyName>
+    <OutputType>Exe</OutputType>
+    <PackageId>ProxyFooConsole</PackageId>
+    <PackageTargetFallback Condition=" '$(TargetFramework)' == 'netcoreapp1.0' ">$(PackageTargetFallback);dnxcore50</PackageTargetFallback>
+    <RuntimeFrameworkVersion Condition=" '$(TargetFramework)' == 'netcoreapp1.0' ">1.0.4</RuntimeFrameworkVersion>
+    <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ProxyFoo\ProxyFoo.csproj" />
+    <ProjectReference Include="..\ProxyFoo.Tests\ProxyFoo.Tests.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net45' ">
+    <PackageReference Include="NUnitLite" Version="3.6.1" />
+    <Reference Include="System" />
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'net45' ">
+    <DefineConstants>$(DefineConstants);NET45</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp1.0' ">
+    <PackageReference Include="NUnitLite" Version="3.6.1" />
+    <!--
+    <PackageReference Include="Microsoft.CSharp" Version="4.0.1" />
+    <PackageReference Include="System.Collections" Version="4.0.11" />
+    <PackageReference Include="System.Console" Version="4.0.0" />
+    <PackageReference Include="System.Linq" Version="4.1.0" />
+    <PackageReference Include="System.Threading" Version="4.0.11" />
+    -->
+  </ItemGroup>
+
+</Project>

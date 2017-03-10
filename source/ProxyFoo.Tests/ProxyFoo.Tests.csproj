@@ -1,0 +1,49 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Description>ProxyFoo.Tests Class Library</Description>
+    <Authors>Jamie da Silva</Authors>
+    <TargetFrameworks>net40;net45;netstandard1.6</TargetFrameworks>
+    <DefineConstants>$(DefineConstants);NUNIT3</DefineConstants>
+    <AssemblyName>ProxyFoo.Tests</AssemblyName>
+    <PackageId>ProxyFoo.Tests</PackageId>
+    <PackageTargetFallback Condition=" '$(TargetFramework)' == 'netstandard1.5' ">$(PackageTargetFallback);dotnet</PackageTargetFallback>
+    <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ProxyFoo\ProxyFoo.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NUnit" Version="3.6.1" />
+  </ItemGroup>
+
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'net40' ">
+    <DefineConstants>$(DefineConstants);NET40;FEATURE_LEGACYREFLECTION;FEATURE_SAVEASSEMBLY</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net40' ">
+    <Reference Include="System" />
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'net45' ">
+    <DefineConstants>$(DefineConstants);NET45</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net45' ">
+    <Reference Include="Microsoft.Build.Utilities.v4.0" />
+    <Reference Include="System" />
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard1.6' ">
+    <DefineConstants>$(DefineConstants);NETSTANDARD</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.6' ">
+    <PackageReference Include="Microsoft.CSharp" Version="4.3.0" />
+  </ItemGroup>
+
+</Project>

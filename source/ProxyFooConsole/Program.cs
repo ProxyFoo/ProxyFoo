@@ -51,7 +51,7 @@ namespace ProxyFooConsole_Package
             switch (args[0])
             {
                 case "tests":
-                    ExecuteTests(new string[0]);
+                    ExecuteTests(new[] { "--noresult" });
                     break;
                 case "sample":
                     ExecuteSample();
@@ -61,7 +61,7 @@ namespace ProxyFooConsole_Package
 
         public static void ExecuteTests(string[] args)
         {
-            new AutoRun(typeof(ProxyFooTestsBase).GetTypeInfo().Assembly).Execute(args, new ExtendedTextWrapper(Console.Out), Console.In);
+            new AutoRun(typeof(ProxyFooTestsBase).GetTypeInfo().Assembly).Execute(args);
         }
 
         public static void ExecuteSample()
