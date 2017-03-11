@@ -15,6 +15,24 @@
     <DebugType>embedded</DebugType>
     <DebugSymbols>True</DebugSymbols>
     <SourceLinkCreate>True</SourceLinkCreate>
+    <PackageReleaseNotes>v0.4.2:
+- Cleanup dependencies
+- Add sourcelink support
+v0.4.1:
+- Update to .NET Standard projects
+v0.4.0:
+- Update to .NET Core 1.0
+v0.3.0: 
+- Add new intercept proxy mixin 
+v0.2.2: 
+- Safe proxies test for method exists on duck proxies (or any real subject that supports it via IMethodExistsProxyMeta) 
+- Safe proxies will be created for any type: any value type can be returned and concrete classes return null (can't proxy them, but you can always duck them to an interface then safe proxy the duck) 
+- Fix threading issue for method exists 
+v0.2.1: 
+- Fix peverify fails if members are repeated in multiple subject interfaces. 
+- Fix proxy member generation for property indexers. 
+v0.2.0: 
+- Add support for out/ref parameters and recursive type definitions.</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
