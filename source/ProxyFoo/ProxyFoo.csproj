@@ -12,7 +12,16 @@
     <PackageProjectUrl>https://github.com/ProxyFoo/ProxyFoo</PackageProjectUrl>
     <PackageLicenseUrl>http://www.apache.org/licenses/LICENSE-2.0.html</PackageLicenseUrl>
     <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
+    <DebugType>embedded</DebugType>
+    <DebugSymbols>True</DebugSymbols>
+    <SourceLinkCreate>True</SourceLinkCreate>
   </PropertyGroup>
+
+  <ItemGroup>
+    <DotNetCliToolReference Include="dotnet-sourcelink" Version="2.0.2" />
+    <DotNetCliToolReference Include="dotnet-sourcelink-git" Version="2.0.2" />
+    <PackageReference Include="SourceLink.Create.GitHub" Version="2.0.2" PrivateAssets="all" />
+  </ItemGroup>
 
   <PropertyGroup Condition=" '$(TargetFramework)' == 'net40-client' ">
     <!-- TargetFrameworkInference does not support net40-client -->
